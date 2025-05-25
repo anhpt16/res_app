@@ -1,0 +1,55 @@
+package com.anhpt.res_app.common.entity;
+
+import com.anhpt.res_app.common.model.enums.status.ReservationStatus;
+import com.anhpt.res_app.common.model.enums.type.ReservationType;
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+@Entity
+@Table(name = "tbl_reservation")
+public class Reservation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    private LocalDate date;
+
+    @Column(name = "desk_number")
+    private Integer deskNumber;
+
+    private Integer duration;
+
+    @Column(name = "start_time")
+    private LocalTime startTime;
+
+    @Column(name = "end_time")
+    private LocalTime endTime;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal price;
+
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus status;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    private String name;
+    private String phone;
+
+    @Column(name = "staff_id")
+    private Long staffId;
+
+    @Enumerated(EnumType.STRING)
+    private ReservationType type;
+}
