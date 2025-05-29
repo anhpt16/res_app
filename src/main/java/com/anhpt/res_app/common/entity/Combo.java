@@ -1,6 +1,6 @@
 package com.anhpt.res_app.common.entity;
 
-import com.anhpt.res_app.common.model.enums.status.ComboStatus;
+import com.anhpt.res_app.common.enums.status.ComboStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

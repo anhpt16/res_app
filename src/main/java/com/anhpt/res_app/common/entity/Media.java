@@ -29,7 +29,7 @@ public class Media {
     private String originName;
 
     @Column(name = "mime_type")
-    private String mineType;
+    private String mimeType;
 
     @Column(name = "file_size")
     private Long fileSize;

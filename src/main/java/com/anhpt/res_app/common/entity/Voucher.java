@@ -1,9 +1,9 @@
 package com.anhpt.res_app.common.entity;
 
 
-import com.anhpt.res_app.common.model.enums.VoucherScope;
-import com.anhpt.res_app.common.model.enums.status.VoucherStatus;
-import com.anhpt.res_app.common.model.enums.type.VoucherType;
+import com.anhpt.res_app.common.enums.VoucherScope;
+import com.anhpt.res_app.common.enums.status.VoucherStatus;
+import com.anhpt.res_app.common.enums.type.VoucherType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.anhpt.res_app.common.entity;
 
-import com.anhpt.res_app.common.model.enums.status.ReservationStatus;
-import com.anhpt.res_app.common.model.enums.type.ReservationType;
+import com.anhpt.res_app.common.enums.status.ReservationStatus;
+import com.anhpt.res_app.common.enums.type.ReservationType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -43,6 +43,9 @@ public class Reservation {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "expired_at")
+    private LocalDateTime expiredAt;
 
     private String name;
     private String phone;

@@ -1,7 +1,7 @@
 package com.anhpt.res_app.common.entity;
 
 import com.anhpt.res_app.common.entity.key.InvoiceStaffId;
-import com.anhpt.res_app.common.model.enums.type.InvoiceStaffType;
+import com.anhpt.res_app.common.enums.type.InvoiceStaffType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

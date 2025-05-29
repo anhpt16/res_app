@@ -1,6 +1,6 @@
 package com.anhpt.res_app.common.entity;
 
-import com.anhpt.res_app.common.model.enums.status.InvoiceStatus;
+import com.anhpt.res_app.common.enums.status.InvoiceStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

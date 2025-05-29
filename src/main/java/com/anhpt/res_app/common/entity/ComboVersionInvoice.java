@@ -1,8 +1,8 @@
 package com.anhpt.res_app.common.entity;
 
 import com.anhpt.res_app.common.entity.key.ComboVersionInvoiceId;
-import com.anhpt.res_app.common.model.enums.status.ComboVersionInvoiceStatus;
-import com.anhpt.res_app.common.model.enums.type.ComboVersionInvoiceType;
+import com.anhpt.res_app.common.enums.status.ComboVersionInvoiceStatus;
+import com.anhpt.res_app.common.enums.type.ComboVersionInvoiceType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

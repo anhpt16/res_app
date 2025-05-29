@@ -1,7 +1,7 @@
 package com.anhpt.res_app.common.entity;
 
 import com.anhpt.res_app.common.entity.key.UserVoucherId;
-import com.anhpt.res_app.common.model.enums.status.UserVoucherStatus;
+import com.anhpt.res_app.common.enums.status.UserVoucherStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

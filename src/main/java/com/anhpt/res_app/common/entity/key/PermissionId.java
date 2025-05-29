@@ -1,6 +1,6 @@
 package com.anhpt.res_app.common.entity.key;
 
-import com.anhpt.res_app.common.model.enums.FeatureMethod;
+import com.anhpt.res_app.common.enums.FeatureMethod;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;

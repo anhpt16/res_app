@@ -1,0 +1,196 @@
+package com.anhpt.res_app.admin.service;
+
+import com.anhpt.res_app.admin.dto.MediaMapper;
+import com.anhpt.res_app.admin.dto.request.MediaUpdateRequest;
+import com.anhpt.res_app.admin.dto.request.MediaUploadRequest;
+import com.anhpt.res_app.admin.dto.response.MediaResponse;
+import com.anhpt.res_app.common.entity.Media;
+import com.anhpt.res_app.common.exception.FileDeleteException;
+import com.anhpt.res_app.common.exception.FileInvalidException;
+import com.anhpt.res_app.common.exception.FileUploadException;
+import com.anhpt.res_app.common.repository.MediaRepository;
+import com.anhpt.res_app.common.utils.FileMeta;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class AdminMediaService {
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+    private final FileMeta fileMeta;
+
+    private final MediaRepository mediaRepository;
+    private final MediaMapper mediaMapper;
+
+    public MediaResponse uploadFile(MediaUploadRequest request) {
+        File destFile = null;
+        String extension = fileMeta.getExtension(request.getFile().getOriginalFilename());
+        String fileName = UUID.randomUUID().toString().replace("-", "") + "." + extension;
+
+        // 1. Kiểm tra thư mục
+        File uploadDirFile = new File(uploadDir);
+        if (uploadDir == null || uploadDir.trim().isEmpty()) {
+            log.error("Thư mục lưu file không tồn tại: {}", uploadDir);
+            throw new FileUploadException("Thư mục upload không tồn tại");
+        }
+        if (!uploadDirFile.exists()) {
+            if (!uploadDirFile.mkdirs()) {
+                log.error("Không thể tạo thư mục upload: {}", uploadDir);
+                throw new FileUploadException("Không thể tạo thư mục upload");
+            }
+        }
+
+        // 2. Lấy metadata (mime type, kích thước, thời lượng...)
+        String originName = request.getName() + "." + extension;
+        String mimeType = request.getFile().getContentType();
+        Long fileSize = request.getFile().getSize();
+
+        Integer width = null;
+        Integer height = null;
+        Long duration = null;
+
+        try {
+            if (mimeType != null && mimeType.startsWith("image/")) {
+                Dimension dimension = fileMeta.getImageDimension(request.getFile());
+                width = dimension.width;
+                height = dimension.height;
+            } else if (mimeType != null && mimeType.startsWith("video/")) {
+                // TODO: Xử lý để lấy duration
+            } else {
+                throw new FileInvalidException("File không hợp lệ");
+            }
+        } catch (Exception e) {
+            log.warn("Lỗi xử lý metadata file: {}", e.getMessage());
+            throw new FileInvalidException("Không thể phân tích file");
+        }
+
+
+        // 3. Ghi file vào hệ thống
+        try {
+            destFile = new File(uploadDirFile, fileName);
+            request.getFile().transferTo(destFile);
+        } catch (IOException e) {
+            log.error("Lỗi ghi file: {}", e.getMessage(), e);
+            if (destFile.exists()) destFile.delete();
+            throw new FileUploadException("Không thể ghi file lên hệ thống");
+        }
+
+        // 4. Lưu DB
+        Media media = new Media();
+        media.setUserId(1L); // TODO: Lấy từ SecurityContext
+        media.setFileName(fileName);
+        media.setOriginName(originName);
+        media.setMimeType(mimeType);
+        media.setFileSize(fileSize);
+        media.setWidth(width);
+        media.setHeight(height);
+        media.setDuration(duration);
+        media.setDescription(request.getDescription());
+        media.setCreatedAt(LocalDateTime.now());
+        media.setUpdatedAt(LocalDateTime.now());
+
+        try {
+            media = mediaRepository.save(media);
+        } catch (Exception e) {
+            log.error("Lỗi lưu thông tin vào database: {}", e.getMessage(), e);
+            if (destFile.exists()) destFile.delete();
+            throw new FileUploadException("Lưu thông tin file thất bại");
+        }
+
+        // 5. Trả về response
+        return mediaMapper.toMediaResponse(media);
+    }
+
+    public MediaResponse getMediaById(Long id) {
+        // Kiểm tra mediaId tồn tại
+        // TODO: Kiểm tra (userId-mediaId) tồn tại
+        Media media = mediaRepository.findById(id)
+            .orElseThrow(() -> {
+                log.warn("Không tìm thấy media với id: {}", id);
+                throw new IllegalArgumentException("Không tìm thấy media");
+            });
+        // Loại bỏ extension nếu có
+        String originName = media.getOriginName();
+        if (originName != null && originName.contains(".")) {
+            originName = originName.substring(0, originName.lastIndexOf('.'));
+        }
+        media.setOriginName(originName);
+
+        return mediaMapper.toMediaResponse(media);
+    }
+
+    public MediaResponse updateMediaById(Long id, MediaUpdateRequest request) {
+        // TODO: Kiểm tra (mediaId-userId) tồn tại
+        // 2. Tìm và validate media
+        Media media = mediaRepository.findById(id)
+            .orElseThrow(() -> {
+                log.warn("Không tìm thấy media với id: {}", id);
+                return new IllegalArgumentException("Không tìm thấy media");
+            });
+
+        // 3. Cập nhật thông tin
+        try {
+            // Lấy extension từ tên file gốc
+            String extension = fileMeta.getExtension(media.getOriginName());
+            String newOriginName = request.getName() + "." + extension;
+
+            // Cập nhật thông tin
+            media.setOriginName(newOriginName);
+            media.setDescription(request.getDescription());
+            media.setUpdatedAt(LocalDateTime.now());
+
+            // Lưu vào database
+            media = mediaRepository.save(media);
+            log.info("Đã cập nhật media thành công: id={}, newName={}",
+                media.getId(), newOriginName);
+
+            // 4. Trả về response
+            return mediaMapper.toMediaResponse(media);
+
+        } catch (Exception e) {
+            log.error("Lỗi khi cập nhật media: {}", e.getMessage());
+            throw new FileUploadException("Không thể cập nhật thông tin media");
+        }
+    }
+
+    public void deleteMediaById(Long id) {
+        log.info("Bắt đầu xóa media với id: {}", id);
+
+        // 1. Validate input
+        if (id == null) {
+            log.warn("ID không được để trống");
+            throw new IllegalArgumentException("ID không được để trống");
+        }
+
+        // 2. Tìm và validate media
+        Media media = mediaRepository.findById(id)
+            .orElseThrow(() -> {
+                log.warn("Không tìm thấy media với id: {}", id);
+                return new IllegalArgumentException("Không tìm thấy media");
+            });
+
+        // 3. Xóa file vật lý trước
+        fileMeta.deletePhysicalFile(media.getFileName(), uploadDir);
+
+        // 4. Xóa record trong database
+        try {
+            mediaRepository.delete(media);
+            log.info("Đã xóa media thành công: id={}, fileName={}",
+                media.getId(), media.getFileName());
+        } catch (Exception e) {
+            log.error("Lỗi khi xóa media từ database: {}", e.getMessage());
+            throw new FileDeleteException("Không thể xóa thông tin media từ database");
+        }
+    }
+}

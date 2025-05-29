@@ -1,7 +1,7 @@
 package com.anhpt.res_app.common.entity;
 
-import com.anhpt.res_app.common.model.enums.status.UserStatus;
-import com.anhpt.res_app.common.model.enums.type.UserType;
+import com.anhpt.res_app.common.enums.status.UserStatus;
+import com.anhpt.res_app.common.enums.type.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 

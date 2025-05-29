@@ -1,8 +1,8 @@
 package com.anhpt.res_app.common.entity;
 
 import com.anhpt.res_app.common.entity.key.DishInvoiceId;
-import com.anhpt.res_app.common.model.enums.status.DishInvoiceStatus;
-import com.anhpt.res_app.common.model.enums.type.DishInvoiceType;
+import com.anhpt.res_app.common.enums.status.DishInvoiceStatus;
+import com.anhpt.res_app.common.enums.type.DishInvoiceType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
