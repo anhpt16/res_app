@@ -4,6 +4,7 @@ import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.exception.file.FileDeleteException;
 import com.anhpt.res_app.common.exception.file.FileInvalidException;
 import com.anhpt.res_app.common.exception.file.FileUploadException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -209,4 +211,41 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AccessDeniedException ex) {
+        log.warn("Truy cập bị từ chối: {}", ex.getMessage());
+        ApiResponse<Void> response = new ApiResponse<>(
+            HttpStatus.FORBIDDEN.value(),
+            false,
+            "Truy cập bị từ chối",
+            null
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+    
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        log.warn("Không tìm thấy tài nguyên: {}", ex.getMessage());
+        ApiResponse<Void> response = new ApiResponse<>(
+            HttpStatus.NOT_FOUND.value(),
+            false,
+            "Tài nguyên không tồn tại",
+            null
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleConstraintViolationException(ConstraintViolationException ex) {
+        log.warn("Lỗi kiểm tra dữ liệu: {}", ex.getMessage());
+        ApiResponse<Void> response = new ApiResponse<>(
+            HttpStatus.BAD_REQUEST.value(),
+            false,
+            "Dữ liệu không hợp lệ",
+            null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+    
 }

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class PostResponse {
     private final Long id;
     private final Long authorId;
-    private final String author;
+    private final String authorName;
     private final String title;
     private final String slug;
     private final String content;

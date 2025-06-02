@@ -1,8 +1,8 @@
 package com.anhpt.res_app.admin.api;
 
-import com.anhpt.res_app.admin.dto.request.MediaSearchRequest;
-import com.anhpt.res_app.admin.dto.request.MediaUpdateRequest;
-import com.anhpt.res_app.admin.dto.request.MediaUploadRequest;
+import com.anhpt.res_app.admin.dto.request.media.MediaSearchRequest;
+import com.anhpt.res_app.admin.dto.request.media.MediaUpdateRequest;
+import com.anhpt.res_app.admin.dto.request.media.MediaUploadRequest;
 import com.anhpt.res_app.admin.dto.response.MediaResponse;
 import com.anhpt.res_app.admin.dto.response.MediaShortResponse;
 import com.anhpt.res_app.admin.service.AdminMediaService;
@@ -51,6 +51,7 @@ public class AdminMediaApi {
         return ResponseEntity.ok(response);
     }
 
+    // TODO: Sửa lại mã để có thể cập nhật từng phần đối với Media
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<MediaResponse>> update(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id,
@@ -82,7 +83,7 @@ public class AdminMediaApi {
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<MediaShortResponse>>> search(
-        @Valid MediaSearchRequest request
+        @ModelAttribute @Valid MediaSearchRequest request
     ) {
         PageResponse<MediaShortResponse> pageResponse = adminMediaService.searchMedia(request);
         ApiResponse<PageResponse<MediaShortResponse>> response = new ApiResponse<>(

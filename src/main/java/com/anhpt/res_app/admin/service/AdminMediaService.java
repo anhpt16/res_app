@@ -1,14 +1,15 @@
 package com.anhpt.res_app.admin.service;
 
 import com.anhpt.res_app.admin.dto.MediaMapper;
-import com.anhpt.res_app.admin.dto.request.MediaSearchRequest;
-import com.anhpt.res_app.admin.dto.request.MediaUpdateRequest;
-import com.anhpt.res_app.admin.dto.request.MediaUploadRequest;
+import com.anhpt.res_app.admin.dto.request.media.MediaSearchRequest;
+import com.anhpt.res_app.admin.dto.request.media.MediaUpdateRequest;
+import com.anhpt.res_app.admin.dto.request.media.MediaUploadRequest;
 import com.anhpt.res_app.admin.dto.response.MediaResponse;
 import com.anhpt.res_app.admin.dto.response.MediaShortResponse;
 import com.anhpt.res_app.admin.filter.AdminMediaFilter;
 import com.anhpt.res_app.common.dto.response.PageResponse;
 import com.anhpt.res_app.common.entity.Media;
+import com.anhpt.res_app.common.entity.User;
 import com.anhpt.res_app.common.exception.MediaException;
 import com.anhpt.res_app.common.exception.file.FileDeleteException;
 import com.anhpt.res_app.common.exception.file.FileInvalidException;
@@ -18,6 +19,7 @@ import com.anhpt.res_app.common.utils.FileMeta;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -93,7 +95,11 @@ public class AdminMediaService {
         }
 
         // 4. Lưu DB
+        User user = new User();
+        user.setId(1L);
+
         Media media = new Media();
+        media.setUser(user);
         media.setFileName(fileName);
         media.setOriginName(originName);
         media.setMimeType(mimeType);
@@ -199,8 +205,8 @@ public class AdminMediaService {
             PageRequest pageRequest = PageRequest.of(request.getPage() - 1, request.getSize());
 
             // Tìm kiếm và phân trang sử dụng AdminMediaFilter
-            org.springframework.data.domain.Page<Media> pageResult = mediaRepository.findAll(
-                adminMediaFilter.searchMediaFilterCriteria(request, userId),
+            Page<Media> pageResult = mediaRepository.findAll(
+                adminMediaFilter.searchMedia(request, userId),
                 pageRequest
             );
 

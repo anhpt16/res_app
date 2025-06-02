@@ -1,4 +1,4 @@
-package com.anhpt.res_app.admin.dto.request;
+package com.anhpt.res_app.admin.dto.request.media;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

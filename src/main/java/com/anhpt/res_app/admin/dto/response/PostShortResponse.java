@@ -13,7 +13,7 @@ import lombok.ToString;
 public class PostShortResponse {
     private final Long id;
     private final Long authorId;
-    private final String author;
+    private final String authorName;
     private final String title;
     private PostStatus status;
 }

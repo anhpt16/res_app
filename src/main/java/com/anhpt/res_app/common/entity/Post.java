@@ -21,9 +21,6 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
-
     private String title;
     private String slug;
     private String content;
@@ -42,4 +39,8 @@ public class Post {
 
     @OneToMany(mappedBy = "post")
     private List<TagPost> tagPosts;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

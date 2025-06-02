@@ -1,4 +1,4 @@
-package com.anhpt.res_app.admin.dto.request;
+package com.anhpt.res_app.admin.dto.request.media;
 
 import com.anhpt.res_app.common.validator.NotBlankButNullable;
 import jakarta.validation.constraints.NotBlank;

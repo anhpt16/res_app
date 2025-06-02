@@ -1,4 +1,4 @@
-package com.anhpt.res_app.admin.dto.request;
+package com.anhpt.res_app.admin.dto.request.post;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

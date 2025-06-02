@@ -1,4 +1,4 @@
-package com.anhpt.res_app.admin.dto.request;
+package com.anhpt.res_app.admin.dto.request.post;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -8,6 +8,7 @@ import lombok.Data;
 public class PostSearchRequest {
     
     private String searchTerm;
+    private Boolean isMyPost;
     private String status;
     private String tagId;
     private String sortByCreatedAt;
