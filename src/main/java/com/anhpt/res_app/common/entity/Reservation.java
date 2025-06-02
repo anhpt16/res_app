@@ -16,13 +16,7 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
-
     private LocalDate date;
-
-    @Column(name = "desk_number")
-    private Integer deskNumber;
 
     private Integer duration;
 
@@ -55,4 +49,15 @@ public class Reservation {
 
     @Enumerated(EnumType.STRING)
     private ReservationType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "desk_number")
+    private Desk desk;
+
+    @OneToOne(mappedBy = "reservation", fetch = FetchType.LAZY)
+    private Invoice invoice;
 }

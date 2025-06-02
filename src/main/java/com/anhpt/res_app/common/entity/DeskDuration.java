@@ -21,12 +21,6 @@ public class DeskDuration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "desk_number")
-    private Integer deskNumber;
-
-    @Column(name = "duration_id")
-    private Long durationId;
-
     @Column(precision = 10, scale = 2)
     private BigDecimal price;
 
@@ -38,4 +32,12 @@ public class DeskDuration {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "desk_number")
+    private Desk desk;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "duration_id")
+    private Duration duration;
 }

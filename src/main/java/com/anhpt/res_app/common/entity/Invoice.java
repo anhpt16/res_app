@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_invoice")
@@ -26,9 +27,6 @@ public class Invoice {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "reservation_id")
-    private Long reservationId;
-
     @Enumerated(EnumType.STRING)
     private InvoiceStatus status;
 
@@ -43,4 +41,21 @@ public class Invoice {
 
     @Column(name = "total_price", precision = 10, scale = 2)
     private BigDecimal totalPrice;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
+
+    @OneToMany(mappedBy = "invoice")
+    List<VoucherInvoice> voucherInvoices;
+
+    @OneToMany(mappedBy = "invoice")
+    List<InvoiceStaff> invoiceStaffs;
+
+    // TODO: Payment
+    @OneToMany(mappedBy = "invoice")
+    List<ComboVersionInvoice> comboVersionInvoices;
+
+    @OneToMany(mappedBy = "invoice")
+    List<DishInvoice> dishInvoices;
 }

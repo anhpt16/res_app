@@ -1,6 +1,6 @@
 package com.anhpt.res_app.common.entity;
 
-import com.anhpt.res_app.common.enums.status.NewStatus;
+import com.anhpt.res_app.common.enums.status.PostStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,14 +8,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "tbl_new")
+@Table(name = "tbl_post")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class New {
+public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,7 +29,7 @@ public class New {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    private NewStatus status;
+    private PostStatus status;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -38,4 +39,7 @@ public class New {
 
     @Column(name = "published_at")
     private LocalDateTime publishedAt;
+
+    @OneToMany(mappedBy = "post")
+    private List<TagPost> tagPosts;
 }

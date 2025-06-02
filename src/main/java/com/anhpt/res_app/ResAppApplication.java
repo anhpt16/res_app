@@ -1,5 +1,6 @@
 package com.anhpt.res_app;
 
+import com.anhpt.res_app.common.utils.CustomSlugify;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

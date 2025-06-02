@@ -1,9 +1,7 @@
 package com.anhpt.res_app.common.entity;
 
 import com.anhpt.res_app.common.entity.key.DishMediaId;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,4 +16,14 @@ import lombok.Setter;
 public class DishMedia {
     @EmbeddedId
     private DishMediaId id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("dishId")
+    @JoinColumn(name = "dish_id")
+    private Dish dish;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("mediaId")
+    @JoinColumn(name = "media_id")
+    private Media media;
 }

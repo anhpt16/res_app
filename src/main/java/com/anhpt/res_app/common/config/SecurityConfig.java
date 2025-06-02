@@ -16,9 +16,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/api/admin/media/**",
-                    "/api/media/**",
-                    "/api/admin/media/preview/**"
+                    "/api/admin/**",
+                    "/api/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             );

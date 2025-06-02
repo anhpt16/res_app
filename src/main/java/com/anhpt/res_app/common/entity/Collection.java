@@ -22,9 +22,6 @@ public class Collection {
 
     private String name;
 
-    @Column(name = "media_id")
-    private Long mediaId;
-
     @Column(name = "user_id")
     private Long userId;
 
@@ -42,4 +39,8 @@ public class Collection {
 
     @Column(name = "published_at")
     private LocalDateTime publishedAt;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "media_id")
+    private Media media;
 }

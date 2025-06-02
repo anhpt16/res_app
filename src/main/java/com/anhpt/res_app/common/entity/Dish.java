@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_dish")
@@ -22,9 +23,6 @@ public class Dish {
     private Long id;
 
     private String name;
-
-    @Column(name = "category_id")
-    private Long categoryId;
 
     private String unit;
     private BigDecimal price;
@@ -55,4 +53,20 @@ public class Dish {
 
     @Column(name = "published_at")
     private LocalDateTime publishedAt;
+
+    @OneToMany(mappedBy = "dish")
+    private List<DishMedia> dishMedias;
+
+    @OneToOne(mappedBy = "dish", fetch = FetchType.LAZY)
+    private DishSetup dishSetup;
+
+    @OneToOne(mappedBy = "dish", fetch = FetchType.LAZY)
+    private Discount discount;
+
+    @OneToMany(mappedBy = "dish")
+    private List<ComboVersionDish> comboVersionDishes;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

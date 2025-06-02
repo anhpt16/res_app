@@ -1,10 +1,7 @@
 package com.anhpt.res_app.common.entity;
 
 import com.anhpt.res_app.common.entity.key.ComboVersionDishId;
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,4 +29,14 @@ public class ComboVersionDish {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("comboVersionId")
+    @JoinColumn(name = "combo_version_id")
+    private ComboVersion comboVersion;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("dishId")
+    @JoinColumn(name = "dish_id")
+    private Dish dish;
 }

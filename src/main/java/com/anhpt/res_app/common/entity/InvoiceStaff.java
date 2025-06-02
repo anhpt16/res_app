@@ -25,4 +25,14 @@ public class InvoiceStaff {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("invoiceId")
+    @JoinColumn(name = "invoice_id")
+    private Invoice invoice;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("staffId")
+    @JoinColumn(name = "staff_id")
+    private User user;
 }

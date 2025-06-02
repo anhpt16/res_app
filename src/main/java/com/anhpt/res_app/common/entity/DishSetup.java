@@ -20,9 +20,6 @@ public class DishSetup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "dish_id")
-    private Long dishId;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "current_status")
     private DishStatus currentStatus;
@@ -38,4 +35,8 @@ public class DishSetup {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dish_id")
+    private Dish dish;
 }

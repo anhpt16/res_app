@@ -39,4 +39,14 @@ public class ComboVersionInvoice {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("comboVersionId")
+    @JoinColumn(name = "combo_version_id")
+    private ComboVersion comboVersion;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("invoiceId")
+    @JoinColumn(name = "invoice_id")
+    private Invoice invoice;
 }

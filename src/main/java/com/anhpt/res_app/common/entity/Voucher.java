@@ -12,6 +12,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_voucher")
@@ -64,4 +65,10 @@ public class Voucher {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "voucher")
+    private List<UserVoucher> userVouchers;
+
+    @OneToMany(mappedBy = "voucher")
+    private List<VoucherInvoice> voucherInvoices;
 }

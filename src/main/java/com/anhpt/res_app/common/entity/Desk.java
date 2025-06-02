@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_desk")
@@ -38,4 +39,13 @@ public class Desk {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "desk")
+    private List<DeskMedia> deskMedia;
+
+    @OneToMany(mappedBy = "desk")
+    private List<DeskDuration> deskDurations;
+
+    @OneToMany(mappedBy = "desk")
+    private List<Reservation> reservations;
 }

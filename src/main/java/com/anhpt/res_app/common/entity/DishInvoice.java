@@ -39,4 +39,14 @@ public class DishInvoice {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("dishId")
+    @JoinColumn(name = "dish_id")
+    private Dish dish;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("invoiceId")
+    @JoinColumn(name = "invoice_id")
+    private Invoice invoice;
 }

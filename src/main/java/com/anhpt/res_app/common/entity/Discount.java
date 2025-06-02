@@ -21,9 +21,6 @@ public class Discount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "dish_id")
-    private Long dishId;
-
     @Column(name = "time_start")
     private LocalDateTime timeStart;
 
@@ -41,4 +38,8 @@ public class Discount {
 
     @Enumerated(EnumType.STRING)
     private DiscountStatus status;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dish_id")
+    private Dish dish;
 }

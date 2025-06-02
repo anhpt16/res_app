@@ -1,10 +1,7 @@
 package com.anhpt.res_app.common.entity;
 
 import com.anhpt.res_app.common.entity.key.DeskMediaId;
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,4 +21,14 @@ public class DeskMedia {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("deskNumber")
+    @JoinColumn(name = "desk_number")
+    private Desk desk;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("mediaId")
+    @JoinColumn(name = "media_id")
+    private Media media;
 }

@@ -1,10 +1,13 @@
 package com.anhpt.res_app.admin.api;
 
+import com.anhpt.res_app.admin.dto.request.MediaSearchRequest;
 import com.anhpt.res_app.admin.dto.request.MediaUpdateRequest;
 import com.anhpt.res_app.admin.dto.request.MediaUploadRequest;
 import com.anhpt.res_app.admin.dto.response.MediaResponse;
+import com.anhpt.res_app.admin.dto.response.MediaShortResponse;
 import com.anhpt.res_app.admin.service.AdminMediaService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
+import com.anhpt.res_app.common.dto.response.PageResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +26,12 @@ public class AdminMediaApi {
         @ModelAttribute @Valid MediaUploadRequest request
     ) {
         MediaResponse mediaResponse = adminMediaService.uploadFile(request);
-        
         ApiResponse<MediaResponse> response = new ApiResponse<>(
             HttpStatus.CREATED.value(),
             true,
             "Upload file thành công",
             mediaResponse
         );
-
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(response);
@@ -41,41 +42,37 @@ public class AdminMediaApi {
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
         MediaResponse mediaResponse = adminMediaService.getMediaById(id);
-
         ApiResponse<MediaResponse> response = new ApiResponse<>(
             HttpStatus.OK.value(),
             true,
             "Lấy thông tin media thành công",
             mediaResponse
         );
-
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<MediaResponse>> update(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id,
         @RequestBody @Valid MediaUpdateRequest request
     ) {
         MediaResponse mediaResponse = adminMediaService.updateMediaById(id, request);
-
         ApiResponse<MediaResponse> response = new ApiResponse<>(
             HttpStatus.OK.value(),
             true,
             "Cập nhật media thành công",
             mediaResponse
         );
-
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(
-        @PathVariable Long id
+        @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
         adminMediaService.deleteMediaById(id);
         ApiResponse<Void> response = new ApiResponse<>(
-            HttpStatus.OK.value(),
+            HttpStatus.NO_CONTENT.value(),
             true,
             "Xóa media thành công",
             null
@@ -83,4 +80,17 @@ public class AdminMediaApi {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping
+    public ResponseEntity<ApiResponse<PageResponse<MediaShortResponse>>> search(
+        @Valid MediaSearchRequest request
+    ) {
+        PageResponse<MediaShortResponse> pageResponse = adminMediaService.searchMedia(request);
+        ApiResponse<PageResponse<MediaShortResponse>> response = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Lấy danh sách media thành công",
+            pageResponse
+        );
+        return ResponseEntity.ok(response);
+    }
 }

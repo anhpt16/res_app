@@ -1,9 +1,13 @@
 package com.anhpt.res_app.common.exception;
 
 import com.anhpt.res_app.common.dto.response.ApiResponse;
+import com.anhpt.res_app.common.exception.file.FileDeleteException;
+import com.anhpt.res_app.common.exception.file.FileInvalidException;
+import com.anhpt.res_app.common.exception.file.FileUploadException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,7 +15,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -160,5 +163,50 @@ public class GlobalExceptionHandler {
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(response);
+    }
+
+    @ExceptionHandler(MediaException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMediaException(
+        Exception ex
+    ) {
+        log.error("Lỗi không xác định: ", ex);
+        ApiResponse<Object> response = new ApiResponse<>(
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            false,
+            "Đã xảy ra lỗi. Vui lòng thử lại sau",
+            null
+        );
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(response);
+    }
+
+    @ExceptionHandler(MultiDuplicateException.class)
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleMultiDuplicateException(
+        MultiDuplicateException ex
+    ) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getErrors().forEach((key, value) -> errors.put(key, value));
+        ApiResponse<Map<String, String>> response = new ApiResponse<>(
+            HttpStatus.BAD_REQUEST.value(),
+            false,
+            "Dữ liệu không hợp lệ",
+            errors
+        );
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(response);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<Void>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        log.warn("Yêu cầu thất bại: {}", ex.getMessage());
+        ApiResponse<Void> response = new ApiResponse<>(
+            HttpStatus.BAD_REQUEST.value(),
+            false,
+            "Yêu cầu không hợp lệ",
+            null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }

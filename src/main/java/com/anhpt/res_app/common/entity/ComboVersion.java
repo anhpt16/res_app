@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_combo_version")
@@ -23,9 +24,6 @@ public class ComboVersion {
 
     @Column(name = "version_code")
     private String versionCode;
-
-    @Column(name = "combo_id")
-    private Long comboId;
 
     private BigDecimal price;
 
@@ -52,4 +50,14 @@ public class ComboVersion {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "combo_id")
+    private Combo combo;
+
+    @OneToMany(mappedBy = "comboVersion")
+    private List<ComboVersionDish> comboVersionDishes;
+
+    @OneToMany(mappedBy = "comboVersion")
+    private List<ComboVersionInvoice> comboVersionInvoices;
 }

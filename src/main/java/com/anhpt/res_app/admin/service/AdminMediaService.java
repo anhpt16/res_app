@@ -1,25 +1,31 @@
 package com.anhpt.res_app.admin.service;
 
 import com.anhpt.res_app.admin.dto.MediaMapper;
+import com.anhpt.res_app.admin.dto.request.MediaSearchRequest;
 import com.anhpt.res_app.admin.dto.request.MediaUpdateRequest;
 import com.anhpt.res_app.admin.dto.request.MediaUploadRequest;
 import com.anhpt.res_app.admin.dto.response.MediaResponse;
+import com.anhpt.res_app.admin.dto.response.MediaShortResponse;
+import com.anhpt.res_app.admin.filter.AdminMediaFilter;
+import com.anhpt.res_app.common.dto.response.PageResponse;
 import com.anhpt.res_app.common.entity.Media;
-import com.anhpt.res_app.common.exception.FileDeleteException;
-import com.anhpt.res_app.common.exception.FileInvalidException;
-import com.anhpt.res_app.common.exception.FileUploadException;
+import com.anhpt.res_app.common.exception.MediaException;
+import com.anhpt.res_app.common.exception.file.FileDeleteException;
+import com.anhpt.res_app.common.exception.file.FileInvalidException;
+import com.anhpt.res_app.common.exception.file.FileUploadException;
 import com.anhpt.res_app.common.repository.MediaRepository;
 import com.anhpt.res_app.common.utils.FileMeta;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,9 +35,9 @@ public class AdminMediaService {
     @Value("${file.upload-dir}")
     private String uploadDir;
     private final FileMeta fileMeta;
-
     private final MediaRepository mediaRepository;
     private final MediaMapper mediaMapper;
+    private final AdminMediaFilter adminMediaFilter;
 
     public MediaResponse uploadFile(MediaUploadRequest request) {
         File destFile = null;
@@ -88,7 +94,6 @@ public class AdminMediaService {
 
         // 4. Lưu DB
         Media media = new Media();
-        media.setUserId(1L); // TODO: Lấy từ SecurityContext
         media.setFileName(fileName);
         media.setOriginName(originName);
         media.setMimeType(mimeType);
@@ -165,14 +170,6 @@ public class AdminMediaService {
     }
 
     public void deleteMediaById(Long id) {
-        log.info("Bắt đầu xóa media với id: {}", id);
-
-        // 1. Validate input
-        if (id == null) {
-            log.warn("ID không được để trống");
-            throw new IllegalArgumentException("ID không được để trống");
-        }
-
         // 2. Tìm và validate media
         Media media = mediaRepository.findById(id)
             .orElseThrow(() -> {
@@ -191,6 +188,38 @@ public class AdminMediaService {
         } catch (Exception e) {
             log.error("Lỗi khi xóa media từ database: {}", e.getMessage());
             throw new FileDeleteException("Không thể xóa thông tin media từ database");
+        }
+    }
+
+    public PageResponse<MediaShortResponse> searchMedia(MediaSearchRequest request) {
+        try {
+            // TODO: Lấy userId từ SecurityContext
+            Long userId = 1L;
+
+            PageRequest pageRequest = PageRequest.of(request.getPage() - 1, request.getSize());
+
+            // Tìm kiếm và phân trang sử dụng AdminMediaFilter
+            org.springframework.data.domain.Page<Media> pageResult = mediaRepository.findAll(
+                adminMediaFilter.searchMediaFilterCriteria(request, userId),
+                pageRequest
+            );
+
+            List<MediaShortResponse> mediaShortResponses = pageResult.getContent().stream()
+                .map(mediaMapper::toMediaShortResponse)
+                .toList();
+
+            // Map kết quả và trả về
+            return new PageResponse<>(
+                mediaShortResponses,
+                request.getPage(),
+                request.getSize(),
+                pageResult.getTotalElements(),
+                pageResult.getTotalPages()
+            );
+
+        } catch (Exception e) {
+            log.error("Tìm kiếm danh sách Media thất bại: {}", e.getMessage(), e);
+            throw new MediaException("Không thể tìm kiếm media: " + e.getMessage());
         }
     }
 }

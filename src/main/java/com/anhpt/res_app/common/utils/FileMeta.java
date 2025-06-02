@@ -1,14 +1,10 @@
 package com.anhpt.res_app.common.utils;
 
-import com.anhpt.res_app.common.exception.FileDeleteException;
-import com.anhpt.res_app.common.exception.FileInvalidException;
-import com.anhpt.res_app.common.exception.FileUploadException;
+import com.anhpt.res_app.common.exception.file.FileDeleteException;
+import com.anhpt.res_app.common.exception.file.FileInvalidException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import ws.schild.jave.MultimediaObject;
-import ws.schild.jave.info.MultimediaInfo;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

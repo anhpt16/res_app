@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_media")
@@ -18,9 +19,6 @@ public class Media {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "user_id")
-    private Long userId;
 
     @Column(name = "file_name")
     private String fileName;
@@ -45,4 +43,17 @@ public class Media {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "media")
+    private List<DeskMedia> deskMedias;
+
+    @OneToMany(mappedBy = "media")
+    private List<DishMedia> dishMedias;
+
+    @OneToOne(mappedBy = "media")
+    private Collection collection;
 }

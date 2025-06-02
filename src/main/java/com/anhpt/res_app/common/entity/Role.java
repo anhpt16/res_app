@@ -4,6 +4,7 @@ import com.anhpt.res_app.common.enums.status.RoleStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_role")
@@ -23,4 +24,10 @@ public class Role {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "role")
+    private List<UserRole> userRoles;
+
+    @OneToMany(mappedBy = "role")
+    private List<Permission> permissions;
 }

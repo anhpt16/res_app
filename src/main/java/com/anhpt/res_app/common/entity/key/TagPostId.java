@@ -12,10 +12,10 @@ import java.io.Serializable;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class TagNewId implements Serializable {
+public class TagPostId implements Serializable {
     @Column(name = "tag_id")
     private Long tagId;
 
-    @Column(name = "new_id")
-    private Long newId;
+    @Column(name = "post_id")
+    private Long postId;
 }
