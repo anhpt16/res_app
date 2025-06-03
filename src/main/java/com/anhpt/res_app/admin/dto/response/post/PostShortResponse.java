@@ -1,4 +1,4 @@
-package com.anhpt.res_app.admin.dto.response;
+package com.anhpt.res_app.admin.dto.response.post;
 
 import com.anhpt.res_app.common.enums.status.PostStatus;
 import lombok.Builder;

@@ -4,6 +4,7 @@ import com.anhpt.res_app.admin.dto.request.media.MediaSearchRequest;
 import com.anhpt.res_app.common.entity.Media;
 import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -19,38 +20,31 @@ public class AdminMediaFilter {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.equal(root.get("user").get("id"), userId));
 
-            // Filter by search term
+            // Điều kiện tìm kiếm
+            // Tiếm kiếm theo tên
             if (StringUtils.hasText(request.getSearchTerm())) {
                 predicates.add(cb.like(
                     cb.lower(root.get("originName")),
                     "%" + request.getSearchTerm().toLowerCase().trim() + "%"
                 ));
             }
-            // Filter by type (IMAGE/VIDEO)
+            // Tìm kiếm theo loại
             if (StringUtils.hasText(request.getType())) {
                 String mimeTypePrefix = request.getType().equalsIgnoreCase("IMAGE") ? "image/" : "video/";
                 predicates.add(cb.like(root.get("mimeType"), mimeTypePrefix + "%"));
             }
-            // Add sorting
-            if (query.getResultType().equals(Media.class)) {
-                query.orderBy(createSortOrder(root, cb, request));
+
+            // Điều kiện sắp xếp
+            List<Order> orders = new ArrayList<>();
+            // Sắp xếp theo createdAt
+            if (StringUtils.hasText(request.getSortByCreatedAt())) {
+                orders.add(request.getSortByCreatedAt().equalsIgnoreCase("DESC") ?
+                    cb.desc(root.get("createdAt")) :
+                    cb.asc(root.get("createdAt")));
             }
+
+            query.orderBy(orders);
             return cb.and(predicates.toArray(new Predicate[0]));
         };
-    }
-
-    private List<Order> createSortOrder(Root<Media> root, CriteriaBuilder cb, MediaSearchRequest request) {
-        List<Order> orders = new ArrayList<>();
-        // Default sort by createdAt DESC
-        if (!StringUtils.hasText(request.getSortByCreatedAt()) || 
-            request.getSortByCreatedAt().equalsIgnoreCase("DESC")) {
-            orders.add(cb.desc(root.get("createdAt")));
-        } else {
-            orders.add(cb.asc(root.get("createdAt")));
-        }
-        // Add additional sorting criteria here if needed
-        // Example: orders.add(cb.asc(root.get("originName")));
-        
-        return orders;
     }
 } 

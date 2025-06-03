@@ -1,4 +1,4 @@
-package com.anhpt.res_app.admin.dto.request.post;
+package com.anhpt.res_app.admin.dto.request.collection;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -6,13 +6,11 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class PostSearchRequest {
-    
-    private String searchTerm;
-    private Boolean isMyPost;
+public class CollectionSearchRequest {
+    private String name;
     private String status;
-    private String tagId;
-
+    @Pattern(regexp = "(?i)^(ASC|DESC)$", message = "Thứ tự sắp xếp không hợp lệ")
+    private String sortByDisplayOrder;
     @Pattern(regexp = "(?i)^(ASC|DESC)$", message = "Thứ tự sắp xếp không hợp lệ")
     private String sortByCreatedAt;
 

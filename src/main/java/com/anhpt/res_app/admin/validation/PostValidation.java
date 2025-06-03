@@ -6,6 +6,7 @@ import com.anhpt.res_app.admin.dto.request.post.PostUpdateRequest;
 import com.anhpt.res_app.common.entity.Post;
 import com.anhpt.res_app.common.entity.User;
 import com.anhpt.res_app.common.enums.status.PostStatus;
+import com.anhpt.res_app.common.exception.ForbiddenActionException;
 import com.anhpt.res_app.common.exception.MultiDuplicateException;
 import com.anhpt.res_app.common.exception.ResourceNotFoundException;
 import com.anhpt.res_app.common.repository.PostRepository;
@@ -67,7 +68,7 @@ public class PostValidation {
     }
 
     public void validatePostSearch(PostSearchRequest request) {
-
+        // TODO: Xử lý tham số cho tìm kiếm danh sách bài viết
     }
 
     // Quản lý cấp cao
@@ -77,6 +78,11 @@ public class PostValidation {
         if (!post.isPresent()) {
             log.warn("Không tìm thấy postId: {}", postId);
             throw new ResourceNotFoundException("Không tìm thấy bài viết");
+        }
+        // Kiểm tra trạng thái
+        if (post.get().getStatus().equals(PostStatus.PUBLISHED)) {
+            log.warn("Không thể xóa bài viết ở trạng thái phát hành: {}", postId);
+            throw new ForbiddenActionException("Không thể xóa bài viết");
         }
     }
 }

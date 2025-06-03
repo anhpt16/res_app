@@ -1,4 +1,4 @@
-package com.anhpt.res_app.admin.dto.response;
+package com.anhpt.res_app.admin.dto.response.media;
 
 import lombok.Builder;
 import lombok.Getter;

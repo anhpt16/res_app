@@ -5,8 +5,8 @@ import com.anhpt.res_app.admin.dto.request.post.PostCreateRequest;
 import com.anhpt.res_app.admin.dto.request.post.PostSearchRequest;
 import com.anhpt.res_app.admin.dto.request.post.PostUpdateRequest;
 import com.anhpt.res_app.admin.dto.request.post.PostUpdateStatusRequest;
-import com.anhpt.res_app.admin.dto.response.PostResponse;
-import com.anhpt.res_app.admin.dto.response.PostShortResponse;
+import com.anhpt.res_app.admin.dto.response.post.PostResponse;
+import com.anhpt.res_app.admin.dto.response.post.PostShortResponse;
 import com.anhpt.res_app.admin.filter.AdminPostFilter;
 import com.anhpt.res_app.admin.validation.PostValidation;
 import com.anhpt.res_app.common.dto.response.PageResponse;
@@ -18,6 +18,7 @@ import com.anhpt.res_app.common.utils.CustomSlugify;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -92,7 +93,14 @@ public class AdminPostService {
         if (post.get().getStatus().equals(postStatus)) {
             throw new IllegalArgumentException("Trạng thái đã tồn tại: " + postStatus);
         }
-        post.get().setStatus(PostStatus.fromCode(request.getStatus()));
+        post.get().setStatus(postStatus);
+        // Kiểm tra bài viết đã phát hành
+        if (postStatus.equals(PostStatus.PUBLISHED)) {
+            // Nếu chưa phát hành lần nào thì cập nhật thời điểm phát hành
+            if (post.get().getStatus() != null) {
+                post.get().setPublishedAt(LocalDateTime.now());
+            }
+        }
         Post postUpdated = postRepository.save(post.get());
         return postMapper.toPostResponse(postUpdated);
     }
@@ -108,7 +116,10 @@ public class AdminPostService {
         User user = new User();
         user.setId(1L);
 
-        PageRequest pageRequest = PageRequest.of(request.getPage() - 1, request.getSize());
+        PageRequest pageRequest = PageRequest.of(
+            request.getPage() - 1,
+            request.getSize()
+        );
         Page<Post> pageResult = postRepository.findAll(
             adminPostFilter.searchPost(request, user),
             pageRequest

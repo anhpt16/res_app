@@ -22,9 +22,6 @@ public class Collection {
 
     private String name;
 
-    @Column(name = "user_id")
-    private Long userId;
-
     @Column(name = "display_order")
     private Integer displayOrder;
 
@@ -43,4 +40,8 @@ public class Collection {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "media_id")
     private Media media;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

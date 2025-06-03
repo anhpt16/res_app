@@ -4,8 +4,8 @@ import com.anhpt.res_app.admin.dto.request.post.PostCreateRequest;
 import com.anhpt.res_app.admin.dto.request.post.PostSearchRequest;
 import com.anhpt.res_app.admin.dto.request.post.PostUpdateRequest;
 import com.anhpt.res_app.admin.dto.request.post.PostUpdateStatusRequest;
-import com.anhpt.res_app.admin.dto.response.PostResponse;
-import com.anhpt.res_app.admin.dto.response.PostShortResponse;
+import com.anhpt.res_app.admin.dto.response.post.PostResponse;
+import com.anhpt.res_app.admin.dto.response.post.PostShortResponse;
 import com.anhpt.res_app.admin.service.AdminPostService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
@@ -67,6 +67,14 @@ public class AdminPostApi {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<PostResponse>> getById(
+        @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
+    ) {
+        // TODO: Lấy ra chi tiết bài viết
+        return null;
+    }
+
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<PostShortResponse>>> get(
         @ModelAttribute @Valid PostSearchRequest request
@@ -95,4 +103,6 @@ public class AdminPostApi {
         );
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    // TODO: Api làm mới thời điểm phát hành
 }

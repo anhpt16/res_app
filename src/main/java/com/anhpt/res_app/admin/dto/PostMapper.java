@@ -1,7 +1,7 @@
 package com.anhpt.res_app.admin.dto;
 
-import com.anhpt.res_app.admin.dto.response.PostResponse;
-import com.anhpt.res_app.admin.dto.response.PostShortResponse;
+import com.anhpt.res_app.admin.dto.response.post.PostResponse;
+import com.anhpt.res_app.admin.dto.response.post.PostShortResponse;
 import com.anhpt.res_app.common.entity.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

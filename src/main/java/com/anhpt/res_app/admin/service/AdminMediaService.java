@@ -4,8 +4,8 @@ import com.anhpt.res_app.admin.dto.MediaMapper;
 import com.anhpt.res_app.admin.dto.request.media.MediaSearchRequest;
 import com.anhpt.res_app.admin.dto.request.media.MediaUpdateRequest;
 import com.anhpt.res_app.admin.dto.request.media.MediaUploadRequest;
-import com.anhpt.res_app.admin.dto.response.MediaResponse;
-import com.anhpt.res_app.admin.dto.response.MediaShortResponse;
+import com.anhpt.res_app.admin.dto.response.media.MediaResponse;
+import com.anhpt.res_app.admin.dto.response.media.MediaShortResponse;
 import com.anhpt.res_app.admin.filter.AdminMediaFilter;
 import com.anhpt.res_app.common.dto.response.PageResponse;
 import com.anhpt.res_app.common.entity.Media;
@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
@@ -202,18 +203,18 @@ public class AdminMediaService {
             // TODO: Lấy userId từ SecurityContext
             Long userId = 1L;
 
-            PageRequest pageRequest = PageRequest.of(request.getPage() - 1, request.getSize());
-
+            PageRequest pageRequest = PageRequest.of(
+                request.getPage() - 1,
+                request.getSize()
+            );
             // Tìm kiếm và phân trang sử dụng AdminMediaFilter
             Page<Media> pageResult = mediaRepository.findAll(
                 adminMediaFilter.searchMedia(request, userId),
                 pageRequest
             );
-
             List<MediaShortResponse> mediaShortResponses = pageResult.getContent().stream()
                 .map(mediaMapper::toMediaShortResponse)
                 .toList();
-
             // Map kết quả và trả về
             return new PageResponse<>(
                 mediaShortResponses,
@@ -222,7 +223,6 @@ public class AdminMediaService {
                 pageResult.getTotalElements(),
                 pageResult.getTotalPages()
             );
-
         } catch (Exception e) {
             log.error("Tìm kiếm danh sách Media thất bại: {}", e.getMessage(), e);
             throw new MediaException("Không thể tìm kiếm media: " + e.getMessage());

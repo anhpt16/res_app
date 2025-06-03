@@ -7,6 +7,7 @@ import com.anhpt.res_app.common.entity.TagPost;
 import com.anhpt.res_app.common.entity.User;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -20,7 +21,8 @@ public class AdminPostFilter {
     public Specification<Post> searchPost(PostSearchRequest request, User user) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            
+
+            // Điều kiện tìm kiếm
             // Lọc ra các bản ghi của user đang đăng nhập
             if (request.getIsMyPost() != null && request.getIsMyPost()) {
                 predicates.add(criteriaBuilder.equal(root.get("user"), user));
@@ -42,21 +44,18 @@ public class AdminPostFilter {
                 Join<TagPost, Tag> tagJoin = tagPostJoin.join("tag", JoinType.INNER);
                 predicates.add(criteriaBuilder.equal(tagJoin.get("id"), Long.parseLong(request.getTagId())));
             }
-            // Add sorting
-            if (query.getResultType().equals(Post.class)) {
-                query.orderBy(createSortOrder(root, criteriaBuilder, request));
+
+            // Điều kiện sắp xếp
+            List<Order> orders = new ArrayList<>();
+            // Sắp xếp theo createdAt
+            if (StringUtils.hasText(request.getSortByCreatedAt())) {
+                orders.add(request.getSortByCreatedAt().equalsIgnoreCase("DESC") ?
+                    criteriaBuilder.desc(root.get("createdAt")) :
+                    criteriaBuilder.asc(root.get("createdAt")));
             }
+
+            query.orderBy(orders);
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
-    }
-
-    public List<Order> createSortOrder(Root<Post> root, CriteriaBuilder criteriaBuilder, PostSearchRequest request) {
-        List<Order> orders = new ArrayList<>();
-        if (StringUtils.hasText(request.getSortByCreatedAt()) && request.getSortByCreatedAt().equals("DESC")) {
-            orders.add(criteriaBuilder.desc(root.get("createdAt")));
-        } else {
-            orders.add(criteriaBuilder.asc(root.get("createdAt")));
-        }
-        return orders;
     }
 }
