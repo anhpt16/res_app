@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,5 +31,5 @@ public class Tag {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "tag")
-    private List<TagPost> tagPosts;
+    private List<TagPost> tagPosts = new ArrayList<>();
 }

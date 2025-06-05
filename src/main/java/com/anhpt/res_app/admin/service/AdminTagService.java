@@ -1,11 +1,12 @@
 package com.anhpt.res_app.admin.service;
 
-import com.anhpt.res_app.admin.dto.TagMapper;
+import com.anhpt.res_app.admin.dto.AdminTagMapper;
 import com.anhpt.res_app.admin.dto.request.TagCreateRequest;
 import com.anhpt.res_app.admin.dto.response.TagResponse;
 import com.anhpt.res_app.admin.validation.TagValidation;
 import com.anhpt.res_app.common.dto.response.PageResponse;
 import com.anhpt.res_app.common.entity.Tag;
+import com.anhpt.res_app.common.exception.ResourceNotFoundException;
 import com.anhpt.res_app.common.repository.TagRepository;
 import com.anhpt.res_app.common.utils.CustomSlugify;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 public class AdminTagService {
     private final TagRepository tagRepository;
     private final TagValidation tagValidation;
-    private final TagMapper tagMapper;
+    private final AdminTagMapper adminTagMapper;
 
     public TagResponse create(TagCreateRequest request) {
         tagValidation.validateTagCreate(request);
@@ -42,7 +43,7 @@ public class AdminTagService {
         tag.setUpdatedAt(LocalDateTime.now());
         tag = tagRepository.save(tag);
     
-        return tagMapper.toTagResponse(tag);
+        return adminTagMapper.toTagResponse(tag);
     }
 
     public TagResponse update(Long tagId, TagCreateRequest request) {
@@ -59,21 +60,24 @@ public class AdminTagService {
         tagUpdate.setSlug(slug);
         tagUpdate.setUpdatedAt(LocalDateTime.now());
         tagUpdate = tagRepository.save(tagUpdate);
-        return tagMapper.toTagResponse(tagUpdate);
+        return adminTagMapper.toTagResponse(tagUpdate);
     }
 
     public void delete(Long tagId) {
         Tag tag = tagRepository.findById(tagId)
-            .orElseThrow(() -> new IllegalArgumentException("Tag không tồn tại id:" + tagId));
-        // TODO: Kiểm tra xem tag có bị sử dụng trong bài viết không
+            .orElseThrow(() -> new ResourceNotFoundException("Tag không tồn tại id:" + tagId));
+        // TODO: Kiểm tra xem tag có được sử dụng trong bài viết không
         tagRepository.delete(tag);
     }
 
     public PageResponse<TagResponse> get(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Tag> tags = tagRepository.findAll(pageable);
+        if (page > tags.getTotalPages()) {
+            throw new IllegalArgumentException("Trang không tồn tại");
+        }
         List<TagResponse> tagResponses = tags.getContent().stream()
-            .map(tagMapper::toTagResponse)
+            .map(adminTagMapper::toTagResponse)
             .collect(Collectors.toList());
         return new PageResponse<>(
             tagResponses,

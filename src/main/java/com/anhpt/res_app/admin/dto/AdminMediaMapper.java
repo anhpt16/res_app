@@ -6,7 +6,7 @@ import com.anhpt.res_app.common.entity.Media;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface MediaMapper {
+public interface AdminMediaMapper {
     MediaResponse toMediaResponse(Media media);
 
     MediaShortResponse toMediaShortResponse(Media media);

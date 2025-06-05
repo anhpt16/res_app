@@ -56,4 +56,7 @@ public class Media {
 
     @OneToOne(mappedBy = "media")
     private Collection collection;
+
+    @OneToMany(mappedBy = "media")
+    private List<Post> posts;
 }

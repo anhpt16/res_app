@@ -71,8 +71,14 @@ public class AdminPostApi {
     public ResponseEntity<ApiResponse<PostResponse>> getById(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
-        // TODO: Lấy ra chi tiết bài viết
-        return null;
+        PostResponse postResponse = adminPostService.getById(id);
+        ApiResponse<PostResponse> response = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Lấy bài viết thành công",
+            postResponse
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping
@@ -105,4 +111,4 @@ public class AdminPostApi {
     }
 
     // TODO: Api làm mới thời điểm phát hành
-}
+ }

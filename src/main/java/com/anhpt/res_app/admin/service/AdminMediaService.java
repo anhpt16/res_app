@@ -1,6 +1,6 @@
 package com.anhpt.res_app.admin.service;
 
-import com.anhpt.res_app.admin.dto.MediaMapper;
+import com.anhpt.res_app.admin.dto.AdminMediaMapper;
 import com.anhpt.res_app.admin.dto.request.media.MediaSearchRequest;
 import com.anhpt.res_app.admin.dto.request.media.MediaUpdateRequest;
 import com.anhpt.res_app.admin.dto.request.media.MediaUploadRequest;
@@ -11,6 +11,7 @@ import com.anhpt.res_app.common.dto.response.PageResponse;
 import com.anhpt.res_app.common.entity.Media;
 import com.anhpt.res_app.common.entity.User;
 import com.anhpt.res_app.common.exception.MediaException;
+import com.anhpt.res_app.common.exception.ResourceNotFoundException;
 import com.anhpt.res_app.common.exception.file.FileDeleteException;
 import com.anhpt.res_app.common.exception.file.FileInvalidException;
 import com.anhpt.res_app.common.exception.file.FileUploadException;
@@ -21,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
@@ -39,7 +39,7 @@ public class AdminMediaService {
     private String uploadDir;
     private final FileMeta fileMeta;
     private final MediaRepository mediaRepository;
-    private final MediaMapper mediaMapper;
+    private final AdminMediaMapper adminMediaMapper;
     private final AdminMediaFilter adminMediaFilter;
 
     public MediaResponse uploadFile(MediaUploadRequest request) {
@@ -121,7 +121,7 @@ public class AdminMediaService {
         }
 
         // 5. Trả về response
-        return mediaMapper.toMediaResponse(media);
+        return adminMediaMapper.toMediaResponse(media);
     }
 
     public MediaResponse getMediaById(Long id) {
@@ -130,7 +130,7 @@ public class AdminMediaService {
         Media media = mediaRepository.findById(id)
             .orElseThrow(() -> {
                 log.warn("Không tìm thấy media với id: {}", id);
-                throw new IllegalArgumentException("Không tìm thấy media");
+                throw new ResourceNotFoundException("Không tìm thấy media");
             });
         // Loại bỏ extension nếu có
         String originName = media.getOriginName();
@@ -139,7 +139,7 @@ public class AdminMediaService {
         }
         media.setOriginName(originName);
 
-        return mediaMapper.toMediaResponse(media);
+        return adminMediaMapper.toMediaResponse(media);
     }
 
     public MediaResponse updateMediaById(Long id, MediaUpdateRequest request) {
@@ -148,7 +148,7 @@ public class AdminMediaService {
         Media media = mediaRepository.findById(id)
             .orElseThrow(() -> {
                 log.warn("Không tìm thấy media với id: {}", id);
-                return new IllegalArgumentException("Không tìm thấy media");
+                return new ResourceNotFoundException("Không tìm thấy media");
             });
 
         // 3. Cập nhật thông tin
@@ -168,7 +168,7 @@ public class AdminMediaService {
                 media.getId(), newOriginName);
 
             // 4. Trả về response
-            return mediaMapper.toMediaResponse(media);
+            return adminMediaMapper.toMediaResponse(media);
 
         } catch (Exception e) {
             log.error("Lỗi khi cập nhật media: {}", e.getMessage());
@@ -181,7 +181,7 @@ public class AdminMediaService {
         Media media = mediaRepository.findById(id)
             .orElseThrow(() -> {
                 log.warn("Không tìm thấy media với id: {}", id);
-                return new IllegalArgumentException("Không tìm thấy media");
+                return new ResourceNotFoundException("Không tìm thấy media");
             });
 
         // 3. Xóa file vật lý trước
@@ -212,8 +212,11 @@ public class AdminMediaService {
                 adminMediaFilter.searchMedia(request, userId),
                 pageRequest
             );
+            if (request.getPage() > pageResult.getTotalPages()) {
+                throw new IllegalArgumentException("Trang không tồn tại");
+            }
             List<MediaShortResponse> mediaShortResponses = pageResult.getContent().stream()
-                .map(mediaMapper::toMediaShortResponse)
+                .map(adminMediaMapper::toMediaShortResponse)
                 .toList();
             // Map kết quả và trả về
             return new PageResponse<>(

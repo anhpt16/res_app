@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 public class TagPost {
     @EmbeddedId
-    private TagPostId id;
+    private TagPostId id = new TagPostId();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("tagId")

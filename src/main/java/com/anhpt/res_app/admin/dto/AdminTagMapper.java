@@ -5,6 +5,6 @@ import com.anhpt.res_app.common.entity.Tag;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface TagMapper {
+public interface AdminTagMapper {
     TagResponse toTagResponse(Tag tag);
 }

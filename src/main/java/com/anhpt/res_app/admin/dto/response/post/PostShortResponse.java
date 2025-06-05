@@ -16,4 +16,7 @@ public class PostShortResponse {
     private final String authorName;
     private final String title;
     private PostStatus status;
+    // Thêm
+    private final Long mediaId;
+    private final String fileName;
 }

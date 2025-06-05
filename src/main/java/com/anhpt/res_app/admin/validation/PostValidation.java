@@ -27,6 +27,8 @@ public class PostValidation {
 
     public void validatePostCreate(PostCreateRequest request) {
         Map<String, String> errors = new HashMap<>();
+        // TODO: Nếu có ảnh, kiểm tra (user-media)
+        // TODO: Nếu có ảnh, kiểm tra là image
         if (postRepository.existsByTitle(request.getTitle())) {
             String field = FieldNameUtil.getFieldName(PostCreateRequest::getTitle);
             errors.put(field, "Đã tồn tại");
@@ -62,6 +64,9 @@ public class PostValidation {
         } else {
             request.setTitle(null);
         }
+        // Kiểm tra nếu có ảnh
+        // TODO: Kiểm tra (user-media)
+        // TODO: Kiểm tra ảnh là image
         if (errors.size() > 0) {
             throw new MultiDuplicateException(errors);
         }

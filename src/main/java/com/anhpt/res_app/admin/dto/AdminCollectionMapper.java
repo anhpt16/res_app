@@ -7,8 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface CollectionMapper {
-
+public interface AdminCollectionMapper {
     @Mapping(source = "user.id", target = "userId")
     //    @Mapping(source = "user.name", target = "userName")
     @Mapping(source = "media.id", target = "mediaId")

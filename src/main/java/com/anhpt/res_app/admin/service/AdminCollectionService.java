@@ -1,6 +1,6 @@
 package com.anhpt.res_app.admin.service;
 
-import com.anhpt.res_app.admin.dto.CollectionMapper;
+import com.anhpt.res_app.admin.dto.AdminCollectionMapper;
 import com.anhpt.res_app.admin.dto.request.collection.CollectionCreateRequest;
 import com.anhpt.res_app.admin.dto.request.collection.CollectionSearchRequest;
 import com.anhpt.res_app.admin.dto.request.collection.CollectionUpdateRequest;
@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -33,7 +32,7 @@ public class AdminCollectionService {
     private final CollectionRepository collectionRepository;
     private final MediaRepository mediaRepository;
     private final CollectionValidation collectionValidation;
-    private final CollectionMapper collectionMapper;
+    private final AdminCollectionMapper adminCollectionMapper;
     private final AdminCollectionFilter adminCollectionFilter;
 
     public CollectionResponse create(CollectionCreateRequest request) {
@@ -58,7 +57,7 @@ public class AdminCollectionService {
             collection.setPublishedAt(LocalDateTime.now());
         }
         collection = collectionRepository.save(collection);
-        return collectionMapper.toCollectionResponse(collection);
+        return adminCollectionMapper.toCollectionResponse(collection);
     }
 
     public CollectionResponse update(Long collectionId, CollectionUpdateRequest request) {
@@ -82,7 +81,7 @@ public class AdminCollectionService {
         }
         collection.setUpdatedAt(LocalDateTime.now());
         collection = collectionRepository.save(collection);
-        return collectionMapper.toCollectionResponse(collection);
+        return adminCollectionMapper.toCollectionResponse(collection);
     }
 
     public void delete(Long CollectionId) {
@@ -93,7 +92,7 @@ public class AdminCollectionService {
     public CollectionResponse getById(Long CollectionId) {
         Collection collection = collectionRepository.findById(CollectionId)
             .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy bộ sưu tập có id: " + CollectionId));
-        return collectionMapper.toCollectionResponse(collection);
+        return adminCollectionMapper.toCollectionResponse(collection);
     }
 
     public PageResponse<CollectionShortResponse> get(CollectionSearchRequest request) {
@@ -108,8 +107,11 @@ public class AdminCollectionService {
             adminCollectionFilter.searchCollection(request),
             pageRequest
         );
+        if (request.getPage() > pageResult.getTotalPages()) {
+            throw new IllegalArgumentException("Trang không tồn tại");
+        }
         List<CollectionShortResponse> collectionShortResponses = pageResult.getContent().stream()
-            .map(collectionMapper::toCollectionShortResponse)
+            .map(adminCollectionMapper::toCollectionShortResponse)
             .toList();
         return new PageResponse<>(
             collectionShortResponses,
