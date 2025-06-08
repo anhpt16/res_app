@@ -48,7 +48,7 @@ public class PostValidation {
         }
         Optional<Post> post = postRepository.findByIdAndUser(postId, user);
         // Kiểm tra user-post
-        if (!post.isPresent()) {
+        if (post.isEmpty()) {
             log.warn("Không tìm thấy userId: {} - postId: {}", user.getId(), postId);
             throw new ResourceNotFoundException("Không tìm thấy bài viết");
         }
@@ -80,7 +80,7 @@ public class PostValidation {
 
     public void validatePostDelete(Long postId) {   
         Optional<Post> post = postRepository.findById(postId);
-        if (!post.isPresent()) {
+        if (post.isEmpty()) {
             log.warn("Không tìm thấy postId: {}", postId);
             throw new ResourceNotFoundException("Không tìm thấy bài viết");
         }

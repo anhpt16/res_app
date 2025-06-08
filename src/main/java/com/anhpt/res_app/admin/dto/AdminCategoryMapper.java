@@ -5,7 +5,7 @@ import com.anhpt.res_app.common.entity.Category;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface CategoryMapper {
+public interface AdminCategoryMapper {
 
     CategoryResponse toCategoryResponse (Category category);
 }

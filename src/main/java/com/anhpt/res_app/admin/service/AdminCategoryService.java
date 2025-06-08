@@ -1,6 +1,6 @@
 package com.anhpt.res_app.admin.service;
 
-import com.anhpt.res_app.admin.dto.CategoryMapper;
+import com.anhpt.res_app.admin.dto.AdminCategoryMapper;
 import com.anhpt.res_app.admin.dto.request.category.CategoryCreateRequest;
 import com.anhpt.res_app.admin.dto.request.category.CategorySearchRequest;
 import com.anhpt.res_app.admin.dto.request.category.CategoryUpdateRequest;
@@ -27,7 +27,7 @@ import java.util.List;
 public class AdminCategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryValidation categoryValidation;
-    private final CategoryMapper categoryMapper;
+    private final AdminCategoryMapper adminCategoryMapper;
 
     public CategoryResponse create(CategoryCreateRequest request) {
         categoryValidation.validateCreate(request);
@@ -37,7 +37,7 @@ public class AdminCategoryService {
         category.setCreatedAt(LocalDateTime.now());
         category.setUpdatedAt(LocalDateTime.now());
         category = categoryRepository.save(category);
-        return categoryMapper.toCategoryResponse(category);
+        return adminCategoryMapper.toCategoryResponse(category);
     }
 
     public CategoryResponse update(CategoryUpdateRequest request, Long categoryId) {
@@ -52,7 +52,7 @@ public class AdminCategoryService {
         }
         category.setUpdatedAt(LocalDateTime.now());
         category = categoryRepository.save(category);
-        return categoryMapper.toCategoryResponse(category);
+        return adminCategoryMapper.toCategoryResponse(category);
     }
 
     public void delete(Long categoryId) {
@@ -77,7 +77,7 @@ public class AdminCategoryService {
         }
 
         List<CategoryResponse> categoryResponses = categories.stream()
-            .map(categoryMapper::toCategoryResponse)
+            .map(adminCategoryMapper::toCategoryResponse)
             .toList();
 
         return new PageResponse<>(

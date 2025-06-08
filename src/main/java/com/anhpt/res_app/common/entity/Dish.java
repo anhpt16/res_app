@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -54,8 +55,8 @@ public class Dish {
     @Column(name = "published_at")
     private LocalDateTime publishedAt;
 
-    @OneToMany(mappedBy = "dish")
-    private List<DishMedia> dishMedias;
+    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DishMedia> dishMedias = new ArrayList<>();
 
     @OneToOne(mappedBy = "dish", fetch = FetchType.LAZY)
     private DishSetup dishSetup;

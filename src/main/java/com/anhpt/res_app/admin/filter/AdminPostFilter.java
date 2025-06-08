@@ -39,10 +39,10 @@ public class AdminPostFilter {
                 predicates.add(criteriaBuilder.equal(root.get("status"), request.getStatus()));
             }
             // Lọc theo thẻ
-            if (StringUtils.hasText(request.getTagId())) {
+            if (request.getTagId() != null) {
                 Join<Post, TagPost> tagPostJoin = root.join("tagPosts", JoinType.INNER);
                 Join<TagPost, Tag> tagJoin = tagPostJoin.join("tag", JoinType.INNER);
-                predicates.add(criteriaBuilder.equal(tagJoin.get("id"), Long.parseLong(request.getTagId())));
+                predicates.add(criteriaBuilder.equal(tagJoin.get("id"), request.getTagId()));
             }
 
             // Điều kiện sắp xếp
