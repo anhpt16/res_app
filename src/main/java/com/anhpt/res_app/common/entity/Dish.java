@@ -65,7 +65,7 @@ public class Dish {
     private Discount discount;
 
     @OneToMany(mappedBy = "dish")
-    private List<ComboVersionDish> comboVersionDishes;
+    private List<ComboVersionDish> comboVersionDishes = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")

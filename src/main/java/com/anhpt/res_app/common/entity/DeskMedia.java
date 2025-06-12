@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 public class DeskMedia {
     @EmbeddedId
-    private DeskMediaId id;
+    private DeskMediaId id = new DeskMediaId();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

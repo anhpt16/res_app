@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 public class UserVoucher {
     @EmbeddedId
-    private UserVoucherId id;
+    private UserVoucherId id = new UserVoucherId();
 
     private Integer quantity;
 

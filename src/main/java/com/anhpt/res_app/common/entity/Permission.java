@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Table(name = "tbl_permission")
 public class Permission {
     @EmbeddedId
-    private PermissionId id;
+    private PermissionId id = new PermissionId();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

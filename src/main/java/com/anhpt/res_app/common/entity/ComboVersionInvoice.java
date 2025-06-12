@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Setter
 public class ComboVersionInvoice {
     @EmbeddedId
-    private ComboVersionInvoiceId id;
+    private ComboVersionInvoiceId id = new ComboVersionInvoiceId();
 
     private Integer count;
     private BigDecimal price;

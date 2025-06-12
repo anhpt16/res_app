@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -48,20 +49,20 @@ public class User {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "user")
-    private List<UserRole> userRoles;
+    private List<UserRole> userRoles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<UserVoucher> userVouchers;
+    private List<UserVoucher> userVouchers = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Media> medias;
+    private List<Media> medias = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Reservation> reservations;
+    private List<Reservation> reservations = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Collection> collections;
+    private List<Collection> collections = new ArrayList<>();
 }

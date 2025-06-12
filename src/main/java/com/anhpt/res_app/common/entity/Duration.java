@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,5 +34,5 @@ public class Duration {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "duration")
-    private List<DeskDuration> deskDurations;
+    private List<DeskDuration> deskDurations = new ArrayList<>();
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,9 +24,6 @@ public class Combo {
 
     private String name;
 
-    @Column(name = "media_id")
-    private Long mediaId;
-
     private String introduce;
     private String description;
 
@@ -38,6 +36,13 @@ public class Combo {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "published_at")
+    private LocalDateTime publishedAt;
+
     @OneToMany(mappedBy = "combo")
-    private List<ComboVersion> comboVersions;
+    private List<ComboVersion> comboVersions = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "media_id")
+    private Media media;
 }

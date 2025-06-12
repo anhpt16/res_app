@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -49,14 +50,17 @@ public class Media {
     private User user;
 
     @OneToMany(mappedBy = "media")
-    private List<DeskMedia> deskMedias;
+    private List<DeskMedia> deskMedias = new ArrayList<>();
 
     @OneToMany(mappedBy = "media")
-    private List<DishMedia> dishMedias;
+    private List<DishMedia> dishMedias = new ArrayList<>();
+
+    @OneToOne(mappedBy = "media", fetch = FetchType.LAZY)
+    private Combo combo;
 
     @OneToOne(mappedBy = "media")
     private Collection collection;
 
     @OneToMany(mappedBy = "media")
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<>();
 }

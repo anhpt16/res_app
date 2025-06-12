@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 public class InvoiceStaff {
     @EmbeddedId
-    private InvoiceStaffId id;
+    private InvoiceStaffId id = new InvoiceStaffId();
 
     @Enumerated(EnumType.STRING)
     private InvoiceStaffType type;

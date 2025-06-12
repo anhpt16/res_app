@@ -12,6 +12,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -67,8 +68,8 @@ public class Voucher {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "voucher")
-    private List<UserVoucher> userVouchers;
+    private List<UserVoucher> userVouchers = new ArrayList<>();
 
     @OneToMany(mappedBy = "voucher")
-    private List<VoucherInvoice> voucherInvoices;
+    private List<VoucherInvoice> voucherInvoices = new ArrayList<>();
 }

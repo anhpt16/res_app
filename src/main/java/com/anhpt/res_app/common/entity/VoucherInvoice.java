@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 public class VoucherInvoice {
     @EmbeddedId
-    private VoucherInvoiceId id;
+    private VoucherInvoiceId id = new VoucherInvoiceId();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("voucherId")

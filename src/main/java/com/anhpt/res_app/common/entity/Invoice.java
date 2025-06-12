@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -47,15 +48,15 @@ public class Invoice {
     private Reservation reservation;
 
     @OneToMany(mappedBy = "invoice")
-    List<VoucherInvoice> voucherInvoices;
+    List<VoucherInvoice> voucherInvoices = new ArrayList<>();
 
     @OneToMany(mappedBy = "invoice")
-    List<InvoiceStaff> invoiceStaffs;
+    List<InvoiceStaff> invoiceStaffs = new ArrayList<>();
 
     // TODO: Payment
     @OneToMany(mappedBy = "invoice")
-    List<ComboVersionInvoice> comboVersionInvoices;
+    List<ComboVersionInvoice> comboVersionInvoices = new ArrayList<>();
 
     @OneToMany(mappedBy = "invoice")
-    List<DishInvoice> dishInvoices;
+    List<DishInvoice> dishInvoices = new ArrayList<>();
 }

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 public class UserRole {
     @EmbeddedId
-    private UserRoleId id;
+    private UserRoleId id = new UserRoleId();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

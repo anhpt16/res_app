@@ -1,7 +1,8 @@
 package com.anhpt.res_app.common.enums.status;
 
 public enum ComboStatus {
-    ACTIVE("Hoạt động", "328E6E"),
+    PUBLISHED("Đã phát hành", "000"),
+    DRAFT("Nháp", "328E6E"),
     INACTIVE("Ngừng hoạt động", "CB0404");
 
     private final String label;

@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -56,8 +57,8 @@ public class ComboVersion {
     private Combo combo;
 
     @OneToMany(mappedBy = "comboVersion")
-    private List<ComboVersionDish> comboVersionDishes;
+    private List<ComboVersionDish> comboVersionDishes = new ArrayList<>();
 
     @OneToMany(mappedBy = "comboVersion")
-    private List<ComboVersionInvoice> comboVersionInvoices;
+    private List<ComboVersionInvoice> comboVersionInvoices = new ArrayList<>();
 }

@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Setter
 public class DishInvoice {
     @EmbeddedId
-    private DishInvoiceId id;
+    private DishInvoiceId id = new DishInvoiceId();
 
     private Integer count;
     private BigDecimal price;

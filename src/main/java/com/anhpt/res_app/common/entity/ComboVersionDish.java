@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 public class ComboVersionDish {
     @EmbeddedId
-    private ComboVersionDishId id;
+    private ComboVersionDishId id = new ComboVersionDishId();
 
     private Integer count;
 
