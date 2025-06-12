@@ -1,12 +1,9 @@
 package com.anhpt.res_app.admin.api;
 
-import com.anhpt.res_app.admin.dto.request.combo.ComboCreateRequest;
-import com.anhpt.res_app.admin.dto.request.combo.ComboSearchRequest;
-import com.anhpt.res_app.admin.dto.request.combo.ComboUpdateRequest;
-import com.anhpt.res_app.admin.dto.response.combo.ComboDetailResponse;
-import com.anhpt.res_app.admin.dto.response.combo.ComboListResponse;
-import com.anhpt.res_app.admin.dto.response.combo.ComboResponse;
+import com.anhpt.res_app.admin.dto.request.combo.*;
+import com.anhpt.res_app.admin.dto.response.combo.*;
 import com.anhpt.res_app.admin.service.AdminComboService;
+import com.anhpt.res_app.admin.service.AdminComboVersionService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
 import jakarta.validation.Valid;
@@ -23,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class AdminComboApi {
     private final AdminComboService adminComboService;
+    private final AdminComboVersionService adminComboVersionService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<ComboResponse>> create(
@@ -98,4 +96,115 @@ public class AdminComboApi {
         );
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
+
+
+    // SECTION: Combo Version - Combo Version Dish
+    // Thêm mới một phiên bản cho một combo
+    @PostMapping("/{id}/version")
+    public ResponseEntity<ApiResponse<ComboVersionResponse>> create(
+        @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
+    ) {
+        ComboVersionResponse response = adminComboVersionService.create(id);
+        ApiResponse<ComboVersionResponse> apiResponse = new ApiResponse<>(
+            HttpStatus.CREATED.value(),
+            true,
+            "Tạo phiên bản thành công",
+            response
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+    }
+
+    // Lấy ra thông tin chi tiết về môt phiên bản
+    @GetMapping("/{id}/version/{versionId}")
+    public ResponseEntity<ApiResponse<ComboVersionResponse>> getVersionById(
+        @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
+        @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId
+    ) {
+        ComboVersionResponse response = adminComboVersionService.getComboVersionById(id, versionId);
+        ApiResponse<ComboVersionResponse> apiResponse = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Lấy phiên bản thành công",
+            response
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    // TODO: Lấy danh sách các phiên bản của một combo
+    // TODO: Cập nhật trạng thái cho một phiên bản
+    // TODO: Xóa một phiên bản
+
+    // Thêm một món ăn cho phiên bản
+    @PostMapping("/{id}/version/{versionId}/dish/{dishId}")
+    public ResponseEntity<ApiResponse<ComboVersionDishResponse>> addDish(
+        @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
+        @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId,
+        @PathVariable @Min(value = 1, message = "DId không hợp lệ") Long dishId,
+        @RequestParam (name = "count", defaultValue = "1") Integer count,
+        @RequestParam (name = "displayOrder", defaultValue = "0") Integer displayOrder
+    ) {
+        ComboVersionDishResponse response = adminComboVersionService.addDish(id, versionId, dishId, count, displayOrder);
+        ApiResponse<ComboVersionDishResponse> apiResponse = new ApiResponse<>(
+            HttpStatus.CREATED.value(),
+            true,
+            "Thêm món ăn thành công",
+            response
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+    }
+
+    // Cập nhật số lượng món ăn của một phiên bản
+    @PatchMapping("/{id}/version/{versionId}/dish/{dishId}")
+    public ResponseEntity<ApiResponse<ComboVersionDishResponse>> updateDish(
+        @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
+        @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId,
+        @PathVariable @Min(value = 1, message = "DId không hợp lệ") Long dishId,
+        @RequestParam (name = "count", defaultValue = "1") Integer count,
+        @RequestParam (name = "displayOrder", defaultValue = "0") Integer displayOrder
+    ) {
+        ComboVersionDishResponse response = adminComboVersionService.updateDish(id, versionId, dishId, count, displayOrder);
+        ApiResponse<ComboVersionDishResponse> apiResponse = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Cập nhật món ăn thành công",
+            response
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    // Xóa một món ăn trong một phiên bản
+    @DeleteMapping("/{id}/version/{versionId}/dish/{dishId}")
+    public ResponseEntity<ApiResponse<Void>> deleteDish(
+        @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
+        @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId,
+        @PathVariable @Min(value = 1, message = "DId không hợp lệ") Long dishId
+    ) {
+        adminComboVersionService.deleteDish(id, versionId, dishId);
+        ApiResponse<Void> apiResponse = new ApiResponse<>(
+            HttpStatus.NO_CONTENT.value(),
+            true,
+            "Xóa món ăn thành công",
+            null
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    // Cập nhật thông tin cho một phiên bản
+    @PatchMapping("/{id}/version/{versionId}")
+    public ResponseEntity<ApiResponse<ComboVersionResponse>> updateVersionById(
+        @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
+        @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId,
+        @RequestBody @Valid VersionUpdateRequest request
+    ) {
+        ComboVersionResponse response = adminComboVersionService.updateVersion(request, id, versionId);
+        ApiResponse<ComboVersionResponse> apiResponse = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Cập nhật phiên bản thành công",
+            response
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+
 }

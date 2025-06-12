@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public class ComboVersionDishResponse {
-    private final Long comboVersionDishId;
+    private final Long comboVersionId;
     private final Long dishId;
     private final Integer count;
     private final Integer displayOrder;

@@ -16,7 +16,6 @@ import java.util.List;
 public class ComboVersionResponse {
     private final Long id;
     private final String versionCode;
-    private final Long comboId;
     private final BigDecimal price;
     private final BigDecimal priceDiscount;
     private final Integer durationFrom;
@@ -31,5 +30,9 @@ public class ComboVersionResponse {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private final LocalDateTime finishAt;
 
+    // Combo
+    private final Long comboId;
+    private final String comboName;
+    // Dish
     private final List<ComboVersionDishResponse> dishes;
 }

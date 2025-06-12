@@ -32,7 +32,7 @@ public class ComboVersion {
     private BigDecimal priceDiscount;
 
     @Column(name = "duration_from")
-    private Integer duarationFrom;
+    private Integer durationFrom;
 
     @Column(name = "duration_to")
     private Integer durationTo;
