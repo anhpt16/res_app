@@ -1,8 +1,6 @@
 package com.anhpt.res_app.admin.service;
 
-import com.anhpt.res_app.admin.dto.AdminCategoryMapper;
 import com.anhpt.res_app.admin.dto.AdminDishMapper;
-import com.anhpt.res_app.admin.dto.AdminMediaMapper;
 import com.anhpt.res_app.admin.dto.request.dish.DishCreateRequest;
 import com.anhpt.res_app.admin.dto.request.dish.DishMediaRequest;
 import com.anhpt.res_app.admin.dto.request.dish.DishSearchRequest;
@@ -11,7 +9,7 @@ import com.anhpt.res_app.admin.dto.response.dish.DishMediaResponse;
 import com.anhpt.res_app.admin.dto.response.dish.DishResponse;
 import com.anhpt.res_app.admin.dto.response.dish.DishShortResponse;
 import com.anhpt.res_app.admin.filter.AdminDishFilter;
-import com.anhpt.res_app.admin.validation.DishValidation;
+import com.anhpt.res_app.admin.validation.AdminDishValidation;
 import com.anhpt.res_app.common.dto.response.PageResponse;
 import com.anhpt.res_app.common.entity.Dish;
 import com.anhpt.res_app.common.entity.DishMedia;
@@ -42,13 +40,13 @@ public class AdminDishService {
     private final CategoryRepository categoryRepository;
     private final MediaRepository mediaRepository;
     private final DishMediaRepository dishMediaRepository;
-    private final DishValidation dishValidation;
+    private final AdminDishValidation adminDishValidation;
     private final AdminDishMapper adminDishMapper;
     private final AdminDishFilter adminDishFilter;
 
     @Transactional
     public DishResponse create(DishCreateRequest request) {
-        dishValidation.validateCreate(request);
+        adminDishValidation.validateCreate(request);
         Dish dish = new Dish();
         dish.setName(request.getName());
         dish.setCategory(categoryRepository.findById(request.getCategoryId())
@@ -96,7 +94,7 @@ public class AdminDishService {
 
     @Transactional
     public DishResponse update(DishUpdateRequest request, Long dishId) {
-        dishValidation.validateUpdate(request, dishId);
+        adminDishValidation.validateUpdate(request, dishId);
         Dish dish = dishRepository.findById(dishId)
             .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy món ăn"));
         // Cập nhật thông tin cơ bản
@@ -194,7 +192,7 @@ public class AdminDishService {
     }
 
     public void delete(Long dishId) {
-        dishValidation.validateDelete(dishId);
+        adminDishValidation.validateDelete(dishId);
         dishRepository.deleteById(dishId);
     }
 
@@ -208,7 +206,7 @@ public class AdminDishService {
     }
 
     public PageResponse<DishShortResponse> search(DishSearchRequest request) {
-        dishValidation.validateSearch(request);
+        adminDishValidation.validateSearch(request);
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize());
         Page<Dish> dishes = dishRepository.findAll(adminDishFilter.search(request), pageable);
         if (dishes.getTotalPages() > 0 && request.getPage() > dishes.getTotalPages()) {

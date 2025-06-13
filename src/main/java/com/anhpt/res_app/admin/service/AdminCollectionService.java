@@ -7,7 +7,7 @@ import com.anhpt.res_app.admin.dto.request.collection.CollectionUpdateRequest;
 import com.anhpt.res_app.admin.dto.response.collection.CollectionResponse;
 import com.anhpt.res_app.admin.dto.response.collection.CollectionShortResponse;
 import com.anhpt.res_app.admin.filter.AdminCollectionFilter;
-import com.anhpt.res_app.admin.validation.CollectionValidation;
+import com.anhpt.res_app.admin.validation.AdminCollectionValidation;
 import com.anhpt.res_app.common.dto.response.PageResponse;
 import com.anhpt.res_app.common.entity.Collection;
 import com.anhpt.res_app.common.entity.Media;
@@ -31,7 +31,7 @@ import java.util.List;
 public class AdminCollectionService {
     private final CollectionRepository collectionRepository;
     private final MediaRepository mediaRepository;
-    private final CollectionValidation collectionValidation;
+    private final AdminCollectionValidation adminCollectionValidation;
     private final AdminCollectionMapper adminCollectionMapper;
     private final AdminCollectionFilter adminCollectionFilter;
 
@@ -40,7 +40,7 @@ public class AdminCollectionService {
         User user = new User();
         user.setId(1L);
 
-        collectionValidation.validateCreate(request, user);
+        adminCollectionValidation.validateCreate(request, user);
         // Lấy Media
         Media media = mediaRepository.findById(request.getMediaId())
             .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tệp có id: " + request.getMediaId()));
@@ -61,7 +61,7 @@ public class AdminCollectionService {
     }
 
     public CollectionResponse update(Long collectionId, CollectionUpdateRequest request) {
-        collectionValidation.validateUpdate(collectionId, request);
+        adminCollectionValidation.validateUpdate(collectionId, request);
 
         Collection collection = collectionRepository.findById(collectionId)
             .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy bộ sưu tập có id: " + collectionId));
@@ -85,7 +85,7 @@ public class AdminCollectionService {
     }
 
     public void delete(Long CollectionId) {
-        collectionValidation.validateDelete(CollectionId);
+        adminCollectionValidation.validateDelete(CollectionId);
         collectionRepository.deleteById(CollectionId);
     }
 
@@ -96,7 +96,7 @@ public class AdminCollectionService {
     }
 
     public PageResponse<CollectionShortResponse> get(CollectionSearchRequest request) {
-        collectionValidation.validateSearch(request);
+        adminCollectionValidation.validateSearch(request);
 
         PageRequest pageRequest = PageRequest.of(
             request.getPage() - 1,

@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/admin/combo")
 @RequiredArgsConstructor
@@ -51,9 +53,51 @@ public class AdminComboApi {
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
-    //TODO: Cập nhật trạng thái của combo
-    //TODO: Phát hành lại combo
-    //TODO: Xóa ảnh của combo
+    // Cập nhật trạng thái của combo
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<ComboResponse>> updateStatus(
+        @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id,
+        @RequestParam (name = "status") String status
+    ) {
+        ComboResponse response = adminComboService.updateStatus(id, status);
+        ApiResponse<ComboResponse> apiResponse = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Cập nhật trạng thái combo thành công",
+            response
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    // Phát hành lại combo
+    @PatchMapping("/{id}/reissue")
+    public ResponseEntity<ApiResponse<ComboResponse>> reissueCombo(
+        @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
+    ) {
+        ComboResponse response = adminComboService.reissue(id);
+        ApiResponse<ComboResponse> apiResponse = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Phát hành lại combo thành công",
+            response
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    // Xóa ảnh của combo
+    @DeleteMapping("/{id}/media")
+    public ResponseEntity<ApiResponse<Void>> deleteComboMedia(
+        @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
+    ) {
+        adminComboService.deleteComboMedia(id);
+        ApiResponse<Void> apiResponse = new ApiResponse<>(
+            HttpStatus.NO_CONTENT.value(),
+            true,
+            "Xóa ảnh combo thành công",
+            null
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(
@@ -99,6 +143,7 @@ public class AdminComboApi {
 
 
     // SECTION: Combo Version - Combo Version Dish
+
     // Thêm mới một phiên bản cho một combo
     @PostMapping("/{id}/version")
     public ResponseEntity<ApiResponse<ComboVersionResponse>> create(
@@ -130,9 +175,54 @@ public class AdminComboApi {
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
-    // TODO: Lấy danh sách các phiên bản của một combo
-    // TODO: Cập nhật trạng thái cho một phiên bản
-    // TODO: Xóa một phiên bản
+    // Lấy danh sách các phiên bản của một combo
+    @GetMapping("/{id}/version")
+    public ResponseEntity<ApiResponse<List<ComboVersionShortResponse>>> getVersionsById(
+        @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
+    ) {
+        List<ComboVersionShortResponse> response = adminComboVersionService.getComboVersions(id);
+        ApiResponse<List<ComboVersionShortResponse>> apiResponse = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Lấy danh sách phiên bản thành công",
+            response
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    // Cập nhật trạng thái cho một phiên bản
+    @PatchMapping("/{id}/version/{versionId}/status")
+    public ResponseEntity<ApiResponse<ComboVersionResponse>> updateVersionStatus(
+        @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
+        @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId,
+        @RequestParam (name = "status") String status
+    ) {
+        ComboVersionResponse response = adminComboVersionService.updateVersionStatus(id, versionId, status);
+        ApiResponse<ComboVersionResponse> apiResponse = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Cập nhật trạng thái phiên bản thành công",
+            response
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    // Xóa một phiên bản
+    @DeleteMapping("/{id}/version/{versionId}")
+    public ResponseEntity<ApiResponse<Void>> deleteVersion(
+        @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
+        @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId
+    ) {
+        adminComboVersionService.deleteComboVersion(id, versionId);
+        ApiResponse<Void> apiResponse = new ApiResponse<>(
+            HttpStatus.NO_CONTENT.value(),
+            true,
+            "Xóa phiên bản thành công",
+            null
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
 
     // Thêm một món ăn cho phiên bản
     @PostMapping("/{id}/version/{versionId}/dish/{dishId}")

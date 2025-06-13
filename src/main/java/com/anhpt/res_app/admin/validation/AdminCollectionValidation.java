@@ -21,7 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class CollectionValidation {
+public class AdminCollectionValidation {
     private final CollectionRepository collectionRepository;
 
     public void validateCreate(CollectionCreateRequest request, User user) {

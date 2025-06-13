@@ -52,8 +52,9 @@ public class AdminDishApi {
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
-    //TODO: Cập nhật trạng thái Dish
+    //TODO: Cập nhật trạng thái món ăn
     //TODO: Phát hành lại món ăn
+    //TODO: Xóa toàn bộ ảnh của món ăn
     //TODO: Thêm phần xử lý thứ tự ảnh của Dish khi lấy ra danh sách ảnh
 
     @DeleteMapping("/{id}")

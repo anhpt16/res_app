@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class DishValidation {
+public class AdminDishValidation {
     private final DishRepository dishRepository;
     private final MediaRepository mediaRepository;
     private final CategoryRepository categoryRepository;

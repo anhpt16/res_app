@@ -2,6 +2,7 @@ package com.anhpt.res_app.admin.validation;
 
 import com.anhpt.res_app.admin.dto.request.combo.VersionUpdateRequest;
 import com.anhpt.res_app.common.entity.ComboVersion;
+import com.anhpt.res_app.common.enums.status.ComboVersionStatus;
 import com.anhpt.res_app.common.exception.MultiDuplicateException;
 import com.anhpt.res_app.common.exception.ResourceNotFoundException;
 import com.anhpt.res_app.common.repository.ComboRepository;
@@ -18,7 +19,7 @@ import java.util.Optional;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class ComboVersionValidation {
+public class AdminComboVersionValidation {
     private final ComboRepository comboRepository;
     private final ComboVersionRepository comboVersionRepository;
 
@@ -99,5 +100,49 @@ public class ComboVersionValidation {
             log.warn("Version không tồn tại: {}", versionId);
             throw new ResourceNotFoundException("Version không tồn tại");
         }   
+    }
+
+    public void validateUpdateVersionStatus(Long comboId, Long versionId, String status) {
+        // Kiểm tra ComboVersion tồn tại
+        ComboVersion comboVersion = comboVersionRepository.findByIdAndComboId(versionId, comboId)
+            .orElseThrow(() -> {
+                log.warn("Version không tồn tại: {}", versionId);
+                throw new ResourceNotFoundException("Version không tồn tại");
+            });
+        // Kiểm tra trạng thái hợp lệ
+        if (status == null) {
+            throw new IllegalArgumentException("Trạng thái không hợp lệ");
+        }
+        ComboVersionStatus comboVersionStatus = ComboVersionStatus.fromCode(status);
+        // Kiểm tra trạng thái trùng lặp
+        if (comboVersion.getStatus().equals(comboVersionStatus)) {
+            log.warn("Trạng thái đã tồn tại: {}", status);
+            throw new IllegalArgumentException("Trạng thái đã tồn tại");
+        }
+        // Nếu trạng thái là Active thì phải có ít nhất 1 món ăn
+        if (comboVersionStatus.equals(ComboVersionStatus.ACTIVE) && comboVersion.getComboVersionDishes().isEmpty()) {
+            log.warn("Version phải có ít nhất 1 món ăn comboId: {}", comboId);
+            throw new IllegalArgumentException("Version phải có ít nhất 1 món ăn");
+        }
+        // Nếu trạn thái là Active thì price không được null
+        if (comboVersionStatus.equals(ComboVersionStatus.ACTIVE) && comboVersion.getPrice() == null) {
+            log.warn("Version phải có price comboId: {}", comboId);
+            throw new IllegalArgumentException("Version phải có price");
+        }
+    }
+
+    public void validateDeleteVersion(Long comboId, Long versionId) {
+        // Kiểm tra ComboVersion tồn tại
+        ComboVersion comboVersion = comboVersionRepository.findByIdAndComboId(versionId, comboId)
+            .orElseThrow(() -> {
+                log.warn("Version không tồn tại: {}", versionId);
+                throw new ResourceNotFoundException("Version không tồn tại");
+            });
+        // Kiểm tra trạng thái
+        if (comboVersion.getStatus().equals(ComboVersionStatus.ACTIVE)) {
+            log.warn("Không thể xóa version đang hoạt động comboId: {}", comboId);
+            throw new IllegalArgumentException("Không thể xóa version đang hoạt động");
+        }
+        //TODO: Kiểm tra combo version đã được sử dụng chưa
     }
 }

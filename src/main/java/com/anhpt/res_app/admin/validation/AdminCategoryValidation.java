@@ -21,7 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class CategoryValidation {
+public class AdminCategoryValidation {
     private final CategoryRepository categoryRepository;
 
     public void validateCreate(CategoryCreateRequest request) {

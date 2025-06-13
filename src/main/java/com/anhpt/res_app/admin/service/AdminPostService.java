@@ -8,7 +8,7 @@ import com.anhpt.res_app.admin.dto.request.post.PostUpdateStatusRequest;
 import com.anhpt.res_app.admin.dto.response.post.PostResponse;
 import com.anhpt.res_app.admin.dto.response.post.PostShortResponse;
 import com.anhpt.res_app.admin.filter.AdminPostFilter;
-import com.anhpt.res_app.admin.validation.PostValidation;
+import com.anhpt.res_app.admin.validation.AdminPostValidation;
 import com.anhpt.res_app.common.dto.response.PageResponse;
 import com.anhpt.res_app.common.entity.*;
 import com.anhpt.res_app.common.enums.status.PostStatus;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminPostService {
     private final AdminPostMapper adminPostMapper;
-    private final PostValidation postValidation;
+    private final AdminPostValidation adminPostValidation;
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
     private final MediaRepository mediaRepository;
@@ -40,7 +40,7 @@ public class AdminPostService {
     @Transactional
     public PostResponse create(PostCreateRequest request) {
         // TODO: Lấy user hiện tại
-        postValidation.validatePostCreate(request);
+        adminPostValidation.validatePostCreate(request);
         // Slug
         String slug = CustomSlugify.slugify(request.getTitle());
         while (postRepository.existsBySlug(slug)) {
@@ -86,7 +86,7 @@ public class AdminPostService {
     @Transactional
     public PostResponse update(PostUpdateRequest request, Long postId) {
         // TODO: Lấy user hiện tại
-        postValidation.validatePostUpdate(request, postId);
+        adminPostValidation.validatePostUpdate(request, postId);
         Optional<Post> post = postRepository.findById(postId);
         if (!post.isPresent()) {
             throw new ResourceNotFoundException("Không tồn tại bài viết id:" + postId);
@@ -161,7 +161,7 @@ public class AdminPostService {
     }
 
     public void delete(Long postId) {
-        postValidation.validatePostDelete(postId);
+        adminPostValidation.validatePostDelete(postId);
         postRepository.deleteById(postId);
     }
 
@@ -175,7 +175,7 @@ public class AdminPostService {
 
     public PageResponse<PostShortResponse> get(PostSearchRequest request) {
         // TODO: Lấy user hiện tại
-        postValidation.validatePostSearch(request);
+        adminPostValidation.validatePostSearch(request);
         User user = new User();
         user.setId(1L);
 

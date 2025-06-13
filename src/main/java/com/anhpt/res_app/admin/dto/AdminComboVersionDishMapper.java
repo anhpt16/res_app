@@ -8,8 +8,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface AdminComboVersionDishMapper {
 
-    @Mapping(source = "id.comboVersionId", target = "comboVersionId")
-    @Mapping(source = "id.dishId", target = "dishId")
+    @Mapping(source = "comboVersion.id", target = "comboVersionId")
+    @Mapping(source = "dish.id", target = "dishId")
     @Mapping(source = "dish.name", target = "dishName")
     ComboVersionDishResponse toComboVersionDishResponse(ComboVersionDish comboVersionDish);
 }

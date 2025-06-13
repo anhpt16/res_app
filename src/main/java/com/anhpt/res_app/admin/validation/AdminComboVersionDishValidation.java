@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class ComboVersionDishValidation {
+public class AdminComboVersionDishValidation {
     private final DishRepository dishRepository;
     private final ComboRepository comboRepository;
     private final ComboVersionRepository comboVersionRepository;

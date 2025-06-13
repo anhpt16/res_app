@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
-public class TagValidation {
+public class AdminTagValidation {
     private final TagRepository tagRepository;
 
     public void validateTagCreate(TagCreateRequest request) {

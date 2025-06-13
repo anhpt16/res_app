@@ -3,7 +3,7 @@ package com.anhpt.res_app.admin.service;
 import com.anhpt.res_app.admin.dto.AdminTagMapper;
 import com.anhpt.res_app.admin.dto.request.TagCreateRequest;
 import com.anhpt.res_app.admin.dto.response.TagResponse;
-import com.anhpt.res_app.admin.validation.TagValidation;
+import com.anhpt.res_app.admin.validation.AdminTagValidation;
 import com.anhpt.res_app.common.dto.response.PageResponse;
 import com.anhpt.res_app.common.entity.Tag;
 import com.anhpt.res_app.common.exception.ResourceNotFoundException;
@@ -25,11 +25,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminTagService {
     private final TagRepository tagRepository;
-    private final TagValidation tagValidation;
+    private final AdminTagValidation adminTagValidation;
     private final AdminTagMapper adminTagMapper;
 
     public TagResponse create(TagCreateRequest request) {
-        tagValidation.validateTagCreate(request);
+        adminTagValidation.validateTagCreate(request);
         // Slug
         String slug = CustomSlugify.slugify(request.getName());
         while (tagRepository.existsBySlug(slug)) {
@@ -47,7 +47,7 @@ public class AdminTagService {
     }
 
     public TagResponse update(Long tagId, TagCreateRequest request) {
-        tagValidation.validateTagUpdate(tagId, request);
+        adminTagValidation.validateTagUpdate(tagId, request);
         Optional<Tag> tag = tagRepository.findById(tagId);
         // Slug
         String slug = CustomSlugify.slugify(request.getName());

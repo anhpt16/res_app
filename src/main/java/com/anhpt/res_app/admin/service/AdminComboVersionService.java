@@ -5,8 +5,9 @@ import com.anhpt.res_app.admin.dto.request.combo.VersionUpdateRequest;
 import com.anhpt.res_app.admin.dto.response.combo.ComboVersionDishResponse;
 import com.anhpt.res_app.admin.dto.response.combo.ComboVersionResponse;
 import com.anhpt.res_app.admin.dto.AdminComboVersionMapper;
-import com.anhpt.res_app.admin.validation.ComboVersionDishValidation;
-import com.anhpt.res_app.admin.validation.ComboVersionValidation;
+import com.anhpt.res_app.admin.dto.response.combo.ComboVersionShortResponse;
+import com.anhpt.res_app.admin.validation.AdminComboVersionDishValidation;
+import com.anhpt.res_app.admin.validation.AdminComboVersionValidation;
 import com.anhpt.res_app.common.entity.Combo;
 import com.anhpt.res_app.common.entity.ComboVersion;
 import com.anhpt.res_app.common.entity.ComboVersionDish;
@@ -24,14 +25,16 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AdminComboVersionService {
     // Validation
-    private final ComboVersionValidation comboVersionValidation;
-    private final ComboVersionDishValidation comboVersionDishValidation;
+    private final AdminComboVersionValidation adminComboVersionValidation;
+    private final AdminComboVersionDishValidation adminComboVersionDishValidation;
     // Repository
     private final ComboVersionRepository comboVersionRepository;
     private final ComboVersionDishRepository comboVersionDishRepository;
@@ -43,7 +46,7 @@ public class AdminComboVersionService {
 
     // Tạo mới một phiên bản
     public ComboVersionResponse create(Long comboId) {
-        comboVersionValidation.validateCreate(comboId);
+        adminComboVersionValidation.validateCreate(comboId);
         Combo combo = comboRepository.findById(comboId)
             .orElseThrow(() -> new ResourceNotFoundException("Combo không tồn tại"));
         ComboVersion comboVersion = new ComboVersion();
@@ -60,7 +63,7 @@ public class AdminComboVersionService {
 
     // Lấy thông tin chi tiết một phiên bản
     public ComboVersionResponse getComboVersionById(Long comboId, Long versionId) {
-        comboVersionValidation.validateGetById(comboId, versionId);
+        adminComboVersionValidation.validateGetById(comboId, versionId);
         ComboVersion comboVersion = comboVersionRepository.findByIdAndComboId(versionId, comboId)
             .orElseThrow(() -> new ResourceNotFoundException("Version không tồn tại"));
         return adminComboVersionMapper.toComboVersionResponse(comboVersion);
@@ -68,7 +71,7 @@ public class AdminComboVersionService {
 
     // Thêm một món ăn cho một phiên bản
     public ComboVersionDishResponse addDish(Long comboId, Long versionId, Long dishId, Integer count, Integer displayOrder) {
-        comboVersionDishValidation.validateCreate(comboId, versionId, dishId);
+        adminComboVersionDishValidation.validateCreate(comboId, versionId, dishId);
         ComboVersion comboVersion = comboVersionRepository.findByIdAndComboId(versionId, comboId)
             .orElseThrow(() -> new ResourceNotFoundException("Version không tồn tại"));
         Dish dish = dishRepository.findById(dishId)
@@ -92,7 +95,7 @@ public class AdminComboVersionService {
 
     // Cập nhật thông tin một món ăn trong phiên bản
     public ComboVersionDishResponse updateDish(Long comboId, Long versionId, Long dishId, Integer count, Integer displayOrder) {
-        comboVersionDishValidation.validateUpdate(comboId, versionId, dishId);
+        adminComboVersionDishValidation.validateUpdate(comboId, versionId, dishId);
         ComboVersion comboVersion = comboVersionRepository.findByIdAndComboId(versionId, comboId)
             .orElseThrow(() -> new ResourceNotFoundException("Version không tồn tại"));
         // Thiết lập ComboVersionDishId
@@ -110,7 +113,7 @@ public class AdminComboVersionService {
 
     // Xóa một món ăn trong phiên bản
     public void deleteDish(Long comboId, Long versionId, Long dishId) {
-        comboVersionDishValidation.validateDelete(comboId, versionId, dishId);
+        adminComboVersionDishValidation.validateDelete(comboId, versionId, dishId);
         ComboVersion comboVersion = comboVersionRepository.findByIdAndComboId(versionId, comboId)
             .orElseThrow(() -> new ResourceNotFoundException("Version không tồn tại"));
         // Thiết lập ComboVersionDishId
@@ -124,7 +127,7 @@ public class AdminComboVersionService {
 
     // Cập nhật thông tin của phiên bản
     public ComboVersionResponse updateVersion(VersionUpdateRequest request, Long comboId, Long versionId) {
-        comboVersionValidation.validateUpdate(request, comboId, versionId);
+        adminComboVersionValidation.validateUpdate(request, comboId, versionId);
         ComboVersion comboVersion = comboVersionRepository.findByIdAndComboId(versionId, comboId)
             .orElseThrow(() -> new ResourceNotFoundException("Version không tồn tại"));
         if (request.getPrice() != null) comboVersion.setPrice(request.getPrice());
@@ -136,5 +139,35 @@ public class AdminComboVersionService {
         comboVersion.setUpdatedAt(LocalDateTime.now());
         comboVersion = comboVersionRepository.save(comboVersion);
         return adminComboVersionMapper.toComboVersionResponse(comboVersion);
+    }
+
+    // Lấy danh sách phiên bản của một combo
+    public List<ComboVersionShortResponse> getComboVersions(Long comboId) {
+        Combo combo = comboRepository.findById(comboId)
+            .orElseThrow(() -> new ResourceNotFoundException("Combo không tồn tại"));
+        List<ComboVersion> comboVersions = combo.getComboVersions();
+        return comboVersions.stream()
+            .map(adminComboVersionMapper::toComboVersionShortResponse)
+            .collect(Collectors.toList());
+    }
+
+    // Cập nhật trạng thái của một phiên bản
+    public ComboVersionResponse updateVersionStatus(Long comboId, Long versionId, String status) {
+        adminComboVersionValidation.validateUpdateVersionStatus(comboId, versionId, status);
+        ComboVersion comboVersion = comboVersionRepository.findByIdAndComboId(versionId, comboId)
+            .orElseThrow(() -> new ResourceNotFoundException("Version không tồn tại"));
+        ComboVersionStatus comboVersionStatus = ComboVersionStatus.fromCode(status);
+        comboVersion.setStatus(comboVersionStatus);
+        comboVersion.setUpdatedAt(LocalDateTime.now());
+        comboVersion = comboVersionRepository.save(comboVersion);
+        return adminComboVersionMapper.toComboVersionResponse(comboVersion);
+    }
+
+    // Xóa một phiên bản của một combo
+    public void deleteComboVersion(Long comboId, Long versionId) {
+        adminComboVersionValidation.validateDeleteVersion(comboId, versionId);
+        ComboVersion comboVersion = comboVersionRepository.findByIdAndComboId(versionId, comboId)
+            .orElseThrow(() -> new ResourceNotFoundException("Version không tồn tại"));
+        comboVersionRepository.delete(comboVersion);
     }
 }

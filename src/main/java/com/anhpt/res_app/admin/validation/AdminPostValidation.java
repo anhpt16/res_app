@@ -22,7 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class PostValidation {
+public class AdminPostValidation {
     private final PostRepository postRepository;
 
     public void validatePostCreate(PostCreateRequest request) {

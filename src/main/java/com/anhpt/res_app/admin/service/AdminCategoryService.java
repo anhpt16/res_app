@@ -5,7 +5,7 @@ import com.anhpt.res_app.admin.dto.request.category.CategoryCreateRequest;
 import com.anhpt.res_app.admin.dto.request.category.CategorySearchRequest;
 import com.anhpt.res_app.admin.dto.request.category.CategoryUpdateRequest;
 import com.anhpt.res_app.admin.dto.response.category.CategoryResponse;
-import com.anhpt.res_app.admin.validation.CategoryValidation;
+import com.anhpt.res_app.admin.validation.AdminCategoryValidation;
 import com.anhpt.res_app.common.dto.response.PageResponse;
 import com.anhpt.res_app.common.entity.Category;
 import com.anhpt.res_app.common.enums.status.CategoryStatus;
@@ -26,11 +26,11 @@ import java.util.List;
 @Slf4j
 public class AdminCategoryService {
     private final CategoryRepository categoryRepository;
-    private final CategoryValidation categoryValidation;
+    private final AdminCategoryValidation adminCategoryValidation;
     private final AdminCategoryMapper adminCategoryMapper;
 
     public CategoryResponse create(CategoryCreateRequest request) {
-        categoryValidation.validateCreate(request);
+        adminCategoryValidation.validateCreate(request);
         Category category = new Category();
         category.setName(request.getName());
         category.setStatus(CategoryStatus.INACTIVE);
@@ -41,7 +41,7 @@ public class AdminCategoryService {
     }
 
     public CategoryResponse update(CategoryUpdateRequest request, Long categoryId) {
-        categoryValidation.validateUpdate(request, categoryId);
+        adminCategoryValidation.validateUpdate(request, categoryId);
         Category category = categoryRepository.findById(categoryId)
             .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy CategoryId: " + categoryId));
         if (request.getName() != null) {
@@ -56,12 +56,12 @@ public class AdminCategoryService {
     }
 
     public void delete(Long categoryId) {
-        categoryValidation.validateDelete(categoryId);
+        adminCategoryValidation.validateDelete(categoryId);
         categoryRepository.deleteById(categoryId);
     }
 
     public PageResponse<CategoryResponse> get(CategorySearchRequest request) {
-        categoryValidation.validateSearch(request);
+        adminCategoryValidation.validateSearch(request);
 
         Pageable pageable = PageRequest.of(
             request.getPage() - 1,

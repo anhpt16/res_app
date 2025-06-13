@@ -23,7 +23,7 @@ import java.util.Optional;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class ComboValidation {
+public class AdminComboValidation {
     private final ComboRepository comboRepository;
     private final MediaRepository mediaRepository;
 
@@ -98,6 +98,52 @@ public class ComboValidation {
         //TODO: Kiểm tra ComboStatus
         if (request.getStatus() != null) {
             ComboStatus status = ComboStatus.fromCode(request.getStatus());
+        }
+    }
+
+    public void validateUpdateStatus(Long comboId, String status) {
+        if (status == null) {
+            throw new IllegalArgumentException("Trạng thái không hợp lệ");
+        }
+        Combo combo = comboRepository.findById(comboId)
+            .orElseThrow(() -> {
+                log.warn("Không tìm thấy comboId: {}", comboId);
+                throw new ResourceNotFoundException("Không tìm thấy combo");
+            });
+        ComboStatus comboStatus = ComboStatus.fromCode(status);
+        if (combo.getStatus().equals(comboStatus)) {
+            log.warn("Trạng thái đã tồn tại comboId: {}", comboId);
+            throw new IllegalArgumentException("Trạng thái đã tồn tại");
+        }
+    }
+
+    public void validateReissue(Long comboId) {
+        Combo combo = comboRepository.findById(comboId)
+            .orElseThrow(() -> {
+                log.warn("Không tìm thấy comboId: {}", comboId);
+                throw new ResourceNotFoundException("Không tìm thấy combo");
+            });
+        // Combo đã phát hành ít nhất 1 lần
+        if (combo.getPublishedAt() == null) {
+            log.warn("Combo chưa phát hành comboId: {}", comboId);
+            throw new IllegalArgumentException("Combo chưa phát hành");
+        }
+        // Combo phải đang ở trạng thái phát hành
+        if (!combo.getStatus().equals(ComboStatus.PUBLISHED)) {
+            log.warn("Combo không đang ở trạng thái phát hành comboId: {}", comboId);
+            throw new IllegalArgumentException("Tái phát hành thất bại");
+        }
+    }
+
+    public void validateDeleteComboMedia(Long comboId) {
+        Combo combo = comboRepository.findById(comboId)
+            .orElseThrow(() -> {
+                log.warn("Không tìm thấy comboId: {}", comboId);
+                throw new ResourceNotFoundException("Không tìm thấy combo");
+            });
+        if (combo.getMedia() == null) {
+            log.warn("Combo không có ảnh comboId: {}", comboId);
+            throw new IllegalArgumentException("Xóa ảnh thất bại");
         }
     }
 }
