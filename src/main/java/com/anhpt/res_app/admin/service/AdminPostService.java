@@ -187,7 +187,7 @@ public class AdminPostService {
             adminPostFilter.searchPost(request, user),
             pageRequest
         );
-        if (request.getPage() > pageResult.getTotalPages()) {
+        if (pageResult.getTotalPages() > 0 && request.getPage() > pageResult.getTotalPages()) {
             throw new IllegalArgumentException("Trang không tồn tại");
         }
         List<PostShortResponse> postShortResponses = pageResult.getContent().stream()

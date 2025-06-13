@@ -42,7 +42,7 @@ public class Combo {
     @OneToMany(mappedBy = "combo")
     private List<ComboVersion> comboVersions = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "media_id")
     private Media media;
 }

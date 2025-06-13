@@ -29,7 +29,7 @@ public class AdminDishFilter {
             }
             // Lọc theo danh mục
             if (request.getCategoryId() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("category"), request.getCategoryId()));
+                predicates.add(criteriaBuilder.equal(root.get("category").get("id"), request.getCategoryId()));
             }
             // Lọc theo trạng thái
             if (StringUtils.hasText(request.getStatus())) {

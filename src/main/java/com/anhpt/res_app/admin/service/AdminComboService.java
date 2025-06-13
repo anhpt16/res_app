@@ -122,7 +122,7 @@ public class AdminComboService {
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize());
         Page<Combo> comboPage = comboRepository.findAll(adminComboFilter.search(request), pageable);
 
-        if (request.getPage() > comboPage.getTotalPages()) {
+        if (comboPage.getTotalPages() > 0 && request.getPage() > comboPage.getTotalPages()) {
             throw new IllegalArgumentException("Trang không tồn tại");
         }
         List<ComboListResponse> comboListResponses = comboPage.getContent().stream()

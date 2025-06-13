@@ -55,8 +55,8 @@ public class Media {
     @OneToMany(mappedBy = "media")
     private List<DishMedia> dishMedias = new ArrayList<>();
 
-    @OneToOne(mappedBy = "media", fetch = FetchType.LAZY)
-    private Combo combo;
+    @OneToMany(mappedBy = "media")
+    private List<Combo> combos;
 
     @OneToOne(mappedBy = "media")
     private Collection collection;

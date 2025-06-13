@@ -107,7 +107,7 @@ public class AdminCollectionService {
             adminCollectionFilter.searchCollection(request),
             pageRequest
         );
-        if (request.getPage() > pageResult.getTotalPages()) {
+        if (pageResult.getTotalPages() > 0 && request.getPage() > pageResult.getTotalPages()) {
             throw new IllegalArgumentException("Trang không tồn tại");
         }
         List<CollectionShortResponse> collectionShortResponses = pageResult.getContent().stream()

@@ -73,7 +73,7 @@ public class AdminTagService {
     public PageResponse<TagResponse> get(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Tag> tags = tagRepository.findAll(pageable);
-        if (page > tags.getTotalPages()) {
+        if (tags.getTotalPages() > 0 && page > tags.getTotalPages()) {
             throw new IllegalArgumentException("Trang không tồn tại");
         }
         List<TagResponse> tagResponses = tags.getContent().stream()

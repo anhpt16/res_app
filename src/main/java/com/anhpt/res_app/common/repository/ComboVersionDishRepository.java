@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ComboVersionDishRepository extends JpaRepository<ComboVersionDish, Long> {
+public interface ComboVersionDishRepository extends JpaRepository<ComboVersionDish, ComboVersionDishId> {
     boolean existsById(ComboVersionDishId id);
     Optional<ComboVersionDish> findById(ComboVersionDishId id);
 }

@@ -72,7 +72,7 @@ public class AdminCategoryService {
             ? categoryRepository.findByStatusOrderByCreatedAt(CategoryStatus.fromCode(request.getStatus()), pageable)
             : categoryRepository.findByOrderByCreatedAt(pageable);
 
-        if (categories.getTotalPages() < request.getPage()) {
+        if (categories.getTotalPages() > 0 && categories.getTotalPages() < request.getPage()) {
             throw new IllegalArgumentException("Trang không tồn tại");
         }
 

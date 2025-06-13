@@ -212,7 +212,7 @@ public class AdminMediaService {
                 adminMediaFilter.searchMedia(request, userId),
                 pageRequest
             );
-            if (request.getPage() > pageResult.getTotalPages()) {
+            if (pageResult.getTotalPages() > 0 && request.getPage() > pageResult.getTotalPages()) {
                 throw new IllegalArgumentException("Trang không tồn tại");
             }
             List<MediaShortResponse> mediaShortResponses = pageResult.getContent().stream()

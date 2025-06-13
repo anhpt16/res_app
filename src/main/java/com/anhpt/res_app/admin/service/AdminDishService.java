@@ -211,7 +211,7 @@ public class AdminDishService {
         dishValidation.validateSearch(request);
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize());
         Page<Dish> dishes = dishRepository.findAll(adminDishFilter.search(request), pageable);
-        if (request.getPage() > dishes.getTotalPages()) {
+        if (dishes.getTotalPages() > 0 && request.getPage() > dishes.getTotalPages()) {
             throw new IllegalArgumentException("Trang không tồn tại");
         }
         List<DishShortResponse> dishShortResponses = dishes.stream()
