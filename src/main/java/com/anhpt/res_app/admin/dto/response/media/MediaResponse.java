@@ -1,5 +1,6 @@
 package com.anhpt.res_app.admin.dto.response.media;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,8 @@ public class MediaResponse {
     private final Integer height;
     private final Long duration;
     private final String description;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private final LocalDateTime createdAt;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private final LocalDateTime updatedAt;
 }
