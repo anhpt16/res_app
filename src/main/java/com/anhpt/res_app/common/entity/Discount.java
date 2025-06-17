@@ -36,9 +36,6 @@ public class Discount {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Enumerated(EnumType.STRING)
-    private DiscountStatus status;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dish_id")
     private Dish dish;
