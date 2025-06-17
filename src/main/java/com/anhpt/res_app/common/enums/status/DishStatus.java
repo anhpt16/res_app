@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum DishStatus {
+    PUBLISHED("Đã phát hành", "000"),
     ACTIVE("Hoạt động", "328E6E"),
     INACTIVE("Ngừng hoạt động", "CB0404");
 

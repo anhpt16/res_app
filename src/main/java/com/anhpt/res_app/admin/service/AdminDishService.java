@@ -191,6 +191,37 @@ public class AdminDishService {
         }
     }
 
+    public DishResponse updateStatus(Long dishId, String status) {
+        adminDishValidation.validateUpdateStatus(dishId, status);
+        Dish dish = dishRepository.findById(dishId)
+            .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Dish"));
+        DishStatus dishStatus = DishStatus.fromCode(status);
+        dish.setStatus(dishStatus);
+        dish.setUpdatedAt(LocalDateTime.now());
+        dish = dishRepository.save(dish);
+        return adminDishMapper.toDishResponse(dish);
+    }
+
+    public DishResponse reissue(Long dishId) {
+        adminDishValidation.validateReissue(dishId);
+        Dish dish = dishRepository.findById(dishId)
+            .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Dish"));
+        dish.setPublishedAt(LocalDateTime.now());
+        dish.setUpdatedAt(LocalDateTime.now());
+        dish = dishRepository.save(dish);
+        return adminDishMapper.toDishResponse(dish);
+    }
+
+    public void deleteAllMedia(Long dishId) {
+        adminDishValidation.validateDeleteAllMedia(dishId);
+        Dish dish = dishRepository.findById(dishId)
+            .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Dish"));
+        dishMediaRepository.deleteAll(dish.getDishMedias());
+        dish.getDishMedias().clear();
+        dish.setUpdatedAt(LocalDateTime.now());
+        dishRepository.save(dish);
+    }
+
     public void delete(Long dishId) {
         adminDishValidation.validateDelete(dishId);
         dishRepository.deleteById(dishId);

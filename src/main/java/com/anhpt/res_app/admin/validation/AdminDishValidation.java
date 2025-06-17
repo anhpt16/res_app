@@ -112,10 +112,66 @@ public class AdminDishValidation {
             log.warn("Không thể xóa món ăn đang hoạt động dishId: {}", dishId);
             throw new ForbiddenActionException("Không thể xóa món ăn");
         }
+        if (dish.getStatus() == DishStatus.PUBLISHED) {
+            log.warn("Không thể xóa món ăn đang phát hành dishId: {}", dishId);
+            throw new ForbiddenActionException("Không thể xóa món ăn");
+        }
         // TODO: Kiểm tra xem món ăn đã được sử dụng
     }
 
     public void validateSearch(DishSearchRequest request) {
+    }
 
+    public void validateUpdateStatus(Long dishId, String status) {
+        if (status == null) {
+            log.warn("Cập nhật trạng thái dishId {} không hợp lệ", dishId);
+            throw new IllegalArgumentException("Trạng thái không hợp lệ");
+        }
+        // Kiểm tra Dish tồn tại
+        Dish dish = dishRepository.findById(dishId)
+            .orElseThrow(() -> {
+                log.warn("Không tìm thấy dishId: {}", dishId);
+                throw new ResourceNotFoundException("Không tìm thấy Dish");
+            });
+        // Kiểm tra status hợp lệ
+        DishStatus dishStatus = DishStatus.fromCode(status);
+        // Kiểm tra trùng lặp trạng thái
+        if (dish.getStatus().equals(dishStatus)) {
+            log.warn("Trạng thái dishId {} đã tồn tại {}", dishId, dishStatus.name());
+            throw new IllegalArgumentException("Trạng thái đã tồn tại");
+        }
+    }
+
+    public void validateDeleteAllMedia(Long dishId) {
+        // Kiểm tra Dish tồn tại
+        Dish dish = dishRepository.findById(dishId)
+            .orElseThrow(() -> {
+                log.warn("Không tìm thấy dishId: {}", dishId);
+                throw new ResourceNotFoundException("Không tìm thấy Dish");
+            });
+        // Kiểm tra DishMedia không rỗng
+        if (dish.getDishMedias().isEmpty()) {
+            log.warn("DishId {} không có DishMedia", dishId);
+            throw new IllegalArgumentException("Dish không có DishMedia");
+        }
+    }
+
+    public void validateReissue(Long dishId) {
+        // Kiểm tra Dish tồn tại
+        Dish dish = dishRepository.findById(dishId)
+            .orElseThrow(() -> {
+                log.warn("Không tìm thấy dishId: {}", dishId);
+                throw new ResourceNotFoundException("Không tìm thấy Dish");
+            });
+        // Kiểm tra Dish chưa từng được phát hành
+        if (dish.getPublishedAt() == null) {
+            log.warn("DishId {} chưa từng được phát hành", dishId);
+            throw new IllegalArgumentException("Dish chưa từng được phát hành");
+        }
+        // Trạng thái món ăn phải là đã phát hành
+        if (!dish.getStatus().equals(DishStatus.PUBLISHED)) {
+            log.warn("DishId {} không phải là món ăn đã phát hành", dishId);
+            throw new IllegalArgumentException("Món ăn chưa được phát hành");
+        }
     }
 }

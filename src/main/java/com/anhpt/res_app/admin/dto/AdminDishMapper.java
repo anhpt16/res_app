@@ -18,6 +18,10 @@ public interface AdminDishMapper {
     @Mapping(source = "dish.category.name", target = "categoryName")
     DishResponse toDishResponse (Dish dish, List<DishMediaResponse> medias);
 
+    @Mapping(source = "dish.category.id", target = "categoryId")
+    @Mapping(source = "dish.category.name", target = "categoryName")
+    DishResponse toDishResponse (Dish dish);
+
     @Mapping(source = "media.id", target = "id")
     @Mapping(source = "media.fileName", target = "fileName")
     DishMediaResponse toDishMediaResponse (DishMedia dishMedia);
