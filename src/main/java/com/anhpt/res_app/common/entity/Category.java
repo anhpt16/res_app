@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_category")
@@ -31,6 +32,6 @@ public class Category {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "category", fetch = FetchType.LAZY)
-    private Dish dish;
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    private List<Dish> dishes;
 }

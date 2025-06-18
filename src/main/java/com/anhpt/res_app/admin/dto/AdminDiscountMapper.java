@@ -5,7 +5,7 @@ import com.anhpt.res_app.common.entity.Discount;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "Spring")
+@Mapper(componentModel = "spring")
 public interface AdminDiscountMapper {
 
     @Mapping(source = "dish.id", target = "dishId")
