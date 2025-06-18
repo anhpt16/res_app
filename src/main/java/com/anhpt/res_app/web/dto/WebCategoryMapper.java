@@ -12,6 +12,5 @@ public interface WebCategoryMapper {
 
     CategoryResponse toCategoryResponse(Category category);
 
-    @Mapping(source = "thumbnail", target = "thumbnail")
-    DishShortResponse toDishShortResponse(Dish dish, String thumbnail);
+
 }

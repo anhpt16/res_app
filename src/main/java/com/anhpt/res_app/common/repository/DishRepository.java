@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,8 +18,7 @@ import java.util.Optional;
 public interface DishRepository extends JpaRepository<Dish, Long> {
     boolean existsByName(String name);
     Optional<Dish> findByName(String name);
-
     Page<Dish> findAll(Specification<Dish> search, Pageable pageable);
-
     List<Dish> findByCategoryAndStatus(Category category, DishStatus status, Sort publishedAt);
+    List<Dish> findByStatusAndPublishedAtGreaterThanEqualOrderByPublishedAtDesc(DishStatus published, LocalDateTime numberDate);
 }

@@ -5,6 +5,7 @@ import com.anhpt.res_app.admin.dto.request.dish.DishMediaRequest;
 import com.anhpt.res_app.admin.dto.request.dish.DishSearchRequest;
 import com.anhpt.res_app.admin.dto.request.dish.DishUpdateRequest;
 import com.anhpt.res_app.common.entity.Dish;
+import com.anhpt.res_app.common.entity.DishSetup;
 import com.anhpt.res_app.common.entity.Media;
 import com.anhpt.res_app.common.enums.status.DishStatus;
 import com.anhpt.res_app.common.exception.ForbiddenActionException;
@@ -12,6 +13,7 @@ import com.anhpt.res_app.common.exception.MultiDuplicateException;
 import com.anhpt.res_app.common.exception.ResourceNotFoundException;
 import com.anhpt.res_app.common.repository.CategoryRepository;
 import com.anhpt.res_app.common.repository.DishRepository;
+import com.anhpt.res_app.common.repository.DishSetupRepository;
 import com.anhpt.res_app.common.repository.MediaRepository;
 import com.anhpt.res_app.common.utils.function.FieldNameUtil;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AdminDishValidation {
     private final DishRepository dishRepository;
+    private final DishSetupRepository dishSetupRepository;
     private final MediaRepository mediaRepository;
     private final CategoryRepository categoryRepository;
 
@@ -133,6 +136,12 @@ public class AdminDishValidation {
                 log.warn("Không tìm thấy dishId: {}", dishId);
                 throw new ResourceNotFoundException("Không tìm thấy Dish");
             });
+        // Món ăn chưa được thiết lập trạng thái mới có thể cập nhật trạng thái
+        Optional<DishSetup> dishSetup = dishSetupRepository.findByDishId(dishId);
+        if (dishSetup.isPresent()) {
+            log.warn("DishId {} đang được thiết lập trạng thái", dishId);
+            throw new IllegalArgumentException("Món ăn đã được thiết lập trạng thái");
+        }
         // Kiểm tra status hợp lệ
         DishStatus dishStatus = DishStatus.fromCode(status);
         // Kiểm tra trùng lặp trạng thái

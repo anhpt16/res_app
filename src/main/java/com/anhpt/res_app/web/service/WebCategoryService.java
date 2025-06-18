@@ -10,6 +10,7 @@ import com.anhpt.res_app.common.exception.ResourceNotFoundException;
 import com.anhpt.res_app.common.repository.CategoryRepository;
 import com.anhpt.res_app.common.repository.DishRepository;
 import com.anhpt.res_app.web.dto.WebCategoryMapper;
+import com.anhpt.res_app.web.dto.WebDishMapper;
 import com.anhpt.res_app.web.dto.response.category.CategoryResponse;
 import com.anhpt.res_app.web.dto.response.dish.DishShortResponse;
 import com.anhpt.res_app.web.validation.WebCategoryValidation;
@@ -30,6 +31,7 @@ public class WebCategoryService {
     private final DishRepository dishRepository;
     // Mapper
     private final WebCategoryMapper webCategoryMapper;
+    private final WebDishMapper webDishMapper;
     // Validation
     private final WebCategoryValidation webCategoryValidation;
 
@@ -59,7 +61,7 @@ public class WebCategoryService {
                     .max(Comparator.comparing(DishMedia::getDisplayOrder))
                     .map(dishMedia -> dishMedia.getMedia().getFileName())
                     .orElse(null);
-                return webCategoryMapper.toDishShortResponse(dish, thumbnail);
+                return webDishMapper.toDishShortResponse(dish, thumbnail);
             })
             .collect(Collectors.toList());
         return dishShortResponses;

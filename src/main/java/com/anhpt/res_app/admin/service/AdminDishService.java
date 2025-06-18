@@ -198,6 +198,7 @@ public class AdminDishService {
         DishStatus dishStatus = DishStatus.fromCode(status);
         dish.setStatus(dishStatus);
         dish.setUpdatedAt(LocalDateTime.now());
+        if (dishStatus.equals(DishStatus.PUBLISHED) && dish.getPublishedAt() == null) dish.setPublishedAt(LocalDateTime.now());
         dish = dishRepository.save(dish);
         return adminDishMapper.toDishResponse(dish);
     }
