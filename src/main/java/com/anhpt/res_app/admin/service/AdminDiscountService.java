@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,6 @@ public class AdminDiscountService {
     // Filter
     private final AdminDiscountFilter adminDiscountFilter;
 
-    // Create
     public DiscountResponse create(Long dishId, DiscountCreateRequest request) {
         adminDiscountValidation.validateCreate(dishId, request);
         // Lấy Dish
@@ -66,6 +66,7 @@ public class AdminDiscountService {
         return adminDiscountMapper.toDiscountResponse(discount);
     }
 
+    // TODO: Kiểm tra nếu Dish tồn tại priceDiscount -> Xóa PriceDiscount trong Dish
     public void delete(Long discountId) {
         adminDiscountValidation.validateDelete(discountId);
         Discount discount = discountRepository.findById(discountId)
@@ -90,5 +91,26 @@ public class AdminDiscountService {
             discounts.getTotalElements(),
             discounts.getTotalPages()
         );
+    }
+
+    // Tìm kiếm các bản ghi có timeStart trùng với thời gian hiện tại trong bảng Discount
+    public List<Discount> getByTimeStartBetween(LocalDateTime startTime, LocalDateTime endTime) {
+        List<Discount> discounts =  discountRepository.findByTimeStartBetween(startTime, endTime);
+        if (discounts.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return discounts;
+    }
+    // Tìm kiếm các bản ghi có timeEnd trùng với thời gian hiện tại trong bảng Discount
+    public List<Discount> getByTimeEndBetween(LocalDateTime startTime, LocalDateTime endTime) {
+        List<Discount> discounts =  discountRepository.findByTimeEndBetween(startTime, endTime);
+        if (discounts.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return discounts;
+    }
+    // Xóa toàn bộ các Discount
+    public void deleteAllByDiscounts(List<Discount> discounts) {
+        discountRepository.deleteAll(discounts);
     }
 }

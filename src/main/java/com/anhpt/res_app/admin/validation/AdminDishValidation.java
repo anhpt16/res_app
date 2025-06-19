@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -182,5 +183,9 @@ public class AdminDishValidation {
             log.warn("DishId {} không phải là món ăn đã phát hành", dishId);
             throw new IllegalArgumentException("Món ăn chưa được phát hành");
         }
+    }
+
+    public void validateUpdatePriceDiscount(Long dishId, BigDecimal priceDiscount) {
+        
     }
 }

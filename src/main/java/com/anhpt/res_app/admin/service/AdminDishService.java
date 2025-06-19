@@ -13,6 +13,7 @@ import com.anhpt.res_app.admin.validation.AdminDishValidation;
 import com.anhpt.res_app.common.dto.response.PageResponse;
 import com.anhpt.res_app.common.entity.Dish;
 import com.anhpt.res_app.common.entity.DishMedia;
+import com.anhpt.res_app.common.entity.DishSetup;
 import com.anhpt.res_app.common.entity.Media;
 import com.anhpt.res_app.common.enums.status.DishStatus;
 import com.anhpt.res_app.common.exception.ResourceNotFoundException;
@@ -28,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -261,4 +263,33 @@ public class AdminDishService {
             dishes.getTotalPages()
         );
     }
+
+    // Cập nhật priceDiscount
+    public void updatePriceDiscountByDishes(Map<Dish, BigDecimal> dishPriceDiscountMap) {
+        // Cập nhật priceDiscount cho các Dish
+        dishPriceDiscountMap.forEach((dish, priceDiscount) -> {
+            dish.setPriceDiscount(priceDiscount);
+            dish.setUpdatedAt(LocalDateTime.now());
+        });
+        // Lấy danh sách Dish đã cập nhật
+        List<Dish> updatedDishes = new ArrayList<>(dishPriceDiscountMap.keySet());
+        // Lưu vào DB
+        dishRepository.saveAll(updatedDishes);
+    }
+
+    // Cập nhật trạng thái (DishSetup)
+    public void updateDishSetupStatus(Map<Dish, DishSetup> dishesMapByDishSetups) {
+        // Cập nhật trạng thái của các Dish
+        dishesMapByDishSetups.forEach((dish, dishSetup) -> {
+            dish.setStatus(dishSetup.getNextStatus());
+            dish.setUpdatedAt(LocalDateTime.now());
+            // Kiểm tra trạng thái tiếp theo là PUBLISHED
+            if (dishSetup.getNextStatus().equals(DishStatus.PUBLISHED) && dish.getPublishedAt() == null) dish.setPublishedAt(LocalDateTime.now());
+        });
+        // Lấy danh sách Dish đã cập nhật
+        List<Dish> updatedDishes = new ArrayList<>(dishesMapByDishSetups.keySet());
+        // Lưu vào DB
+        dishRepository.saveAll(updatedDishes);
+    }
+
 }

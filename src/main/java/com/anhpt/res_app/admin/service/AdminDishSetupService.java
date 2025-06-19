@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,5 +88,18 @@ public class AdminDishSetupService {
             dishSetups.getTotalElements(),
             dishSetups.getTotalPages()
         );
+    }
+
+    // Lấy các bản ghi có milestone trùng khớp với thời điểm hiện tại trong bảng Setup
+    public List<DishSetup> getDishSetupsByMilestone(LocalDateTime milestone) {
+        List<DishSetup> dishSetups = dishSetupRepository.findByMilestone(milestone);
+        if (dishSetups.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return dishSetups;
+    }
+    // Xóa DishSetups
+    public void deleteDishSetups(List<DishSetup> dishSetups) {
+        dishSetupRepository.deleteAll(dishSetups);
     }
 }

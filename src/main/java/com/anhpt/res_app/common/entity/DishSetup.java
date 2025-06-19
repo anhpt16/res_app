@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import java.time.LocalDateTime;
 
@@ -38,5 +40,6 @@ public class DishSetup {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dish_id")
+    @NotFound(action = NotFoundAction.IGNORE)
     private Dish dish;
 }
