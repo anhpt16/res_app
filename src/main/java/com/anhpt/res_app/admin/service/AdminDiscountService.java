@@ -58,9 +58,9 @@ public class AdminDiscountService {
         adminDiscountValidation.validateUpdate(discountId, request);
         Discount discount = discountRepository.findById(discountId)
             .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Discount"));
-        if (discount.getTimeStart() != null) discount.setTimeStart(request.getTimeStart());
-        if (discount.getTimeEnd() != null) discount.setTimeEnd(request.getTimeEnd());
-        if (discount.getPriceDiscount() != null) discount.setPriceDiscount(request.getPriceDiscount());
+        if (request.getTimeStart() != null) discount.setTimeStart(request.getTimeStart());
+        if (request.getTimeEnd() != null) discount.setTimeEnd(request.getTimeEnd());
+        if (request.getPriceDiscount() != null) discount.setPriceDiscount(request.getPriceDiscount());
         discount.setUpdatedAt(LocalDateTime.now());
         discount = discountRepository.save(discount);
         return adminDiscountMapper.toDiscountResponse(discount);

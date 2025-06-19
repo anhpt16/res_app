@@ -2,6 +2,7 @@ package com.anhpt.res_app.web.api;
 
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.web.dto.response.dish.DishComingResponse;
+import com.anhpt.res_app.web.dto.response.dish.DishDiscountResponse;
 import com.anhpt.res_app.web.dto.response.dish.DishEndingResponse;
 import com.anhpt.res_app.web.dto.response.dish.DishShortResponse;
 import com.anhpt.res_app.web.service.WebDishService;
@@ -57,6 +58,19 @@ public class WebDishMenuApi {
             true,
             "Lấy danh sách món ăn mới cập nhật thành công",
             dishShortResponses
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    // Lấy danh sách món ăn giảm giá
+    @GetMapping("/discount")
+    public ResponseEntity<ApiResponse<List<DishDiscountResponse>>> getDiscountDishes() {
+        List<DishDiscountResponse> dishDiscountResponses = webDishService.getDiscountDishes();
+        ApiResponse<List<DishDiscountResponse>> apiResponse = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Lấy danh sách món ăn giảm giá thành công",
+            dishDiscountResponses
         );
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }

@@ -1,18 +1,17 @@
 package com.anhpt.res_app.web.service;
 
+import com.anhpt.res_app.common.entity.Discount;
 import com.anhpt.res_app.common.entity.Dish;
 import com.anhpt.res_app.common.entity.DishMedia;
 import com.anhpt.res_app.common.entity.DishSetup;
 import com.anhpt.res_app.common.enums.status.DishStatus;
 import com.anhpt.res_app.common.exception.ResourceNotFoundException;
+import com.anhpt.res_app.common.repository.DiscountRepository;
 import com.anhpt.res_app.common.repository.DishRepository;
 import com.anhpt.res_app.common.repository.DishSetupRepository;
 import com.anhpt.res_app.common.utils.Constants;
 import com.anhpt.res_app.web.dto.WebDishMapper;
-import com.anhpt.res_app.web.dto.response.dish.DishComingResponse;
-import com.anhpt.res_app.web.dto.response.dish.DishEndingResponse;
-import com.anhpt.res_app.web.dto.response.dish.DishResponse;
-import com.anhpt.res_app.web.dto.response.dish.DishShortResponse;
+import com.anhpt.res_app.web.dto.response.dish.*;
 import com.anhpt.res_app.web.validation.WebDishValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +29,7 @@ public class WebDishService {
     // Repository
     private final DishRepository dishRepository;
     private final DishSetupRepository dishSetupRepository;
+    private final DiscountRepository discountRepository;
     // Mapper
     private final WebDishMapper webDishMapper;
     // Validation
@@ -112,5 +112,31 @@ public class WebDishService {
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
         return dishShortResponses;
+    }
+
+    // Lấy danh sách món ăn giảm giá
+    public List<DishDiscountResponse> getDiscountDishes() {
+        // Lấy danh sách các món ăn trong bảng Discount
+        List<Discount> discounts = discountRepository.findAll();
+        if (discounts.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<DishDiscountResponse> dishDiscountResponses = discounts.stream()
+            .map(discount -> {
+                // Lấy món ăn
+                Dish dish = discount.getDish();
+                if (dish == null) {
+                    return null;
+                }
+                // Lấy thumbnail
+                String thumbnail = dish.getDishMedias().stream()
+                    .max(Comparator.comparing(DishMedia::getDisplayOrder))
+                    .map(dishMedia -> dishMedia.getMedia().getFileName())
+                    .orElse(null);
+                return webDishMapper.toDishDiscountResponse(discount, dish, thumbnail);
+            })
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+        return dishDiscountResponses;
     }
 }
