@@ -7,6 +7,7 @@ import com.anhpt.res_app.admin.dto.response.category.CategoryResponse;
 import com.anhpt.res_app.admin.service.AdminCategoryService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class AdminCategoryApi {
     private final AdminCategoryService adminCategoryService;
 
     @PostMapping
+    @ApiCategory(ApiCategory.CategoryType.ADMIN)
     public ResponseEntity<ApiResponse<CategoryResponse>> create(
         @RequestBody @Valid CategoryCreateRequest request
     ) {
@@ -37,6 +39,7 @@ public class AdminCategoryApi {
     }
 
     @PatchMapping("/{id}")
+    @ApiCategory(ApiCategory.CategoryType.ADMIN)
     public ResponseEntity<ApiResponse<CategoryResponse>> update(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id,
         @RequestBody CategoryUpdateRequest request
@@ -52,6 +55,7 @@ public class AdminCategoryApi {
     }
 
     @DeleteMapping("/{id}")
+    @ApiCategory(ApiCategory.CategoryType.ADMIN)
     public ResponseEntity<ApiResponse<Void>> delete(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -66,6 +70,7 @@ public class AdminCategoryApi {
     }
 
     @GetMapping
+    @ApiCategory(ApiCategory.CategoryType.ADMIN)
     public ResponseEntity<ApiResponse<PageResponse<CategoryResponse>>> get(
         @ModelAttribute @Valid CategorySearchRequest request
     ) {

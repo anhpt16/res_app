@@ -8,6 +8,7 @@ import com.anhpt.res_app.admin.dto.response.collection.CollectionShortResponse;
 import com.anhpt.res_app.admin.service.AdminCollectionService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;

@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -66,11 +67,18 @@ public class AdminDiscountService {
         return adminDiscountMapper.toDiscountResponse(discount);
     }
 
-    // TODO: Kiểm tra nếu Dish tồn tại priceDiscount -> Xóa PriceDiscount trong Dish
     public void delete(Long discountId) {
         adminDiscountValidation.validateDelete(discountId);
         Discount discount = discountRepository.findById(discountId)
             .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Discount"));
+        // Loại bỏ priceDiscount nếu đã được thiết lập
+        Dish dish = discount.getDish();
+        if (dish != null && dish.getPriceDiscount() != null) {
+            dish.setPriceDiscount(null);
+            dish.setUpdatedAt(LocalDateTime.now());
+            dishRepository.save(dish);
+        }
+        // Xóa Discount
         discountRepository.delete(discount);
     }
 
