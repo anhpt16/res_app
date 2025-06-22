@@ -2,6 +2,10 @@ package com.anhpt.res_app.common.entity;
 
 import com.anhpt.res_app.common.enums.status.RoleStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,6 +13,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "tbl_role")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

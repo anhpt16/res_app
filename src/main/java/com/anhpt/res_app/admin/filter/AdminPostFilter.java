@@ -53,7 +53,6 @@ public class AdminPostFilter {
                     criteriaBuilder.desc(root.get("createdAt")) :
                     criteriaBuilder.asc(root.get("createdAt")));
             }
-
             query.orderBy(orders);
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
