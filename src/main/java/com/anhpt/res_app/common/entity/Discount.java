@@ -40,6 +40,5 @@ public class Discount {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dish_id")
-    @NotFound(action = NotFoundAction.IGNORE)
     private Dish dish;
 }

@@ -73,7 +73,7 @@ public class AdminDiscountService {
             .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Discount"));
         // Loại bỏ priceDiscount nếu đã được thiết lập
         Dish dish = discount.getDish();
-        if (dish != null && dish.getPriceDiscount() != null) {
+        if (dish.getPriceDiscount() != null) {
             dish.setPriceDiscount(null);
             dish.setUpdatedAt(LocalDateTime.now());
             dishRepository.save(dish);

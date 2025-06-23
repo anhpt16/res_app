@@ -7,10 +7,10 @@ import lombok.*;
 import java.io.Serializable;
 
 @Embeddable
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
 public class UserRoleId implements Serializable {
     @Column(name = "user_id")

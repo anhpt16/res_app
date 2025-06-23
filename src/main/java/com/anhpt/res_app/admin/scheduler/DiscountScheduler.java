@@ -40,12 +40,6 @@ public class DiscountScheduler {
         if (!discounts.isEmpty()) {
             // Lọc ra những discount có dish tồn tại và tạo map dish -> priceDiscount
             Map<Dish, BigDecimal> dishPriceDiscountMap = discounts.stream()
-                .peek(discount -> {
-                    if (discount.getDish() == null) {
-                        log.error("DiscountId {} không tìm thấy Dish", discount.getId());
-                    }
-                })
-                .filter(discount -> discount.getDish() != null)
                 .collect(Collectors.toMap(
                     Discount::getDish,
                     Discount::getPriceDiscount,
@@ -60,14 +54,8 @@ public class DiscountScheduler {
 
     private void handleDiscountEnd(List<Discount> discounts) {
         if (!discounts.isEmpty()) {
-            // Lọc ra những discount có dish tồn tại và tạo map dish -> priceDiscount
+            // Tạo map dish -> priceDiscount
             Map<Dish, BigDecimal> dishPriceDiscountMap = discounts.stream()
-                .peek(discount -> {
-                    if (discount.getDish() == null) {
-                        log.error("DiscountId {} không tìm thấy Dish", discount.getId());
-                    }
-                })
-                .filter(discount -> discount.getDish() != null)
                 .collect(Collectors.toMap(
                     Discount::getDish,
                     null,
@@ -76,12 +64,8 @@ public class DiscountScheduler {
             if (!dishPriceDiscountMap.isEmpty()) {
                 // Gọi service cập nhật priceDiscount cho các Dish
                 adminDishService.updatePriceDiscountByDishes(dishPriceDiscountMap);
-                // Lấy danh sách Discount có Dish tồn tại để xóa
-                List<Discount> validDiscountsToDelete = discounts.stream()
-                    .filter(discount -> discount.getDish() != null)
-                    .collect(Collectors.toList());
                 // Sau khi cập nhật priceDiscount, xóa bản ghi này trong Discount
-                adminDiscountService.deleteAllByDiscounts(validDiscountsToDelete);
+                adminDiscountService.deleteAllByDiscounts(discounts);
             }
         }
     }

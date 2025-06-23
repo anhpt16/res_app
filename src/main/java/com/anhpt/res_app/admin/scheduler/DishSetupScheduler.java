@@ -31,13 +31,8 @@ public class DishSetupScheduler {
         // Lấy các bản ghi có milestone trùng khớp với thời điểm hiện tại trong bảng Setup
         List<DishSetup> dishSetups = adminDishSetupService.getDishSetupsByMilestone(now);
         if (!dishSetups.isEmpty()) {
-            // Lọc ra những setup có dish tồn tại và tạo map dish -> setup
+            // Tạo map dish -> setup
             Map<Dish, DishSetup> dishesMapBySetups = dishSetups.stream()
-                .peek(dishSetup -> {
-                    if (dishSetup.getDish() == null) {
-                        log.error("SetupId {} không tìm thấy Dish", dishSetup.getId());
-                    }
-                })
                 .filter(setup -> setup.getDish() != null)
                 .collect(Collectors.toMap(
                     DishSetup::getDish,
@@ -46,12 +41,8 @@ public class DishSetupScheduler {
             if (!dishesMapBySetups.isEmpty()) {
                 // Gọi Service chuyển trạng thái của các Dish
                 adminDishService.updateDishSetupStatus(dishesMapBySetups);
-                // Lấy danh sách DishSetup có Dish tồn tại để xóa
-                List<DishSetup> validDishSetupsToDelete = dishSetups.stream()
-                    .filter(dishSetup -> dishSetup.getDish() != null)
-                    .collect(Collectors.toList());
                 // Sau khi chuyển trạng thái, xóa bản ghi hiện tại trong bảng Setup
-                adminDishSetupService.deleteDishSetups(validDishSetupsToDelete);
+                adminDishSetupService.deleteDishSetups(dishSetups);
             }
         }
     }

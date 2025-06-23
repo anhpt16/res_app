@@ -15,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,10 +33,10 @@ public class User {
     private String typeId;
 
     @Column(name = "email_verified")
-    private Boolean emailVerified;
+    private Boolean emailVerified = false;
 
     @Column(name = "phone_verified")
-    private Boolean phoneVerified;
+    private Boolean phoneVerified = false;
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;
@@ -48,7 +47,7 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRole> userRoles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")

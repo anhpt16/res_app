@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum UserStatus {
     ACTIVE("Hoạt động", "328E6E"),
+    BANNED("Bị cấm", "000"),
     INACTIVE("Ngừng hoạt động", "CB0404");
 
     private final String label;

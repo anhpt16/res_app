@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 public class UserRole {
     @EmbeddedId
     private UserRoleId id = new UserRoleId();

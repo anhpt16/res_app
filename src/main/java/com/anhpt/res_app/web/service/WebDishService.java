@@ -54,16 +54,12 @@ public class WebDishService {
         List<DishComingResponse> dishComingResponses = dishSetups.stream()
             .map(dishSetup -> {
                 Dish dish = dishSetup.getDish();
-                if (dish == null) {
-                    return null;
-                }
                 String thumbnail = dish.getDishMedias().stream()
                     .max(Comparator.comparing(DishMedia::getDisplayOrder))
                     .map(dishMedia -> dishMedia.getMedia().getFileName())
                     .orElse(null);
                 return webDishMapper.toDishComingResponse(dishSetup, dish, thumbnail);
             })
-            .filter(Objects::nonNull)
             .collect(Collectors.toList());
         return dishComingResponses;
     }
@@ -78,16 +74,12 @@ public class WebDishService {
         List<DishEndingResponse> dishEndingResponses = dishSetups.stream()
             .map(dishSetup -> {
                 Dish dish = dishSetup.getDish();
-                if (dish == null) {
-                    return null;
-                }
                 String thumbnail = dish.getDishMedias().stream()
                     .max(Comparator.comparing(DishMedia::getDisplayOrder))
                     .map(dishMedia -> dishMedia.getMedia().getFileName())
                     .orElse(null);
                 return webDishMapper.toDishEndingResponse(dishSetup, dish, thumbnail);
             })
-            .filter(Objects::nonNull)
             .collect(Collectors.toList());
         return dishEndingResponses;
     }
@@ -125,9 +117,6 @@ public class WebDishService {
             .map(discount -> {
                 // Lấy món ăn
                 Dish dish = discount.getDish();
-                if (dish == null) {
-                    return null;
-                }
                 // Lấy thumbnail
                 String thumbnail = dish.getDishMedias().stream()
                     .max(Comparator.comparing(DishMedia::getDisplayOrder))
