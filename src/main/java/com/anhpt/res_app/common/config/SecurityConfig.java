@@ -24,7 +24,6 @@ public class SecurityConfig {
                 ).permitAll()
                 .anyRequest().authenticated()
             );
-        
         return http.build();
     }
 

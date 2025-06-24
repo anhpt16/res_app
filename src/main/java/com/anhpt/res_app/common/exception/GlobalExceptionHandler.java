@@ -6,6 +6,7 @@ import com.anhpt.res_app.common.exception.file.FileInvalidException;
 import com.anhpt.res_app.common.exception.file.FileUploadException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -176,6 +177,18 @@ public class GlobalExceptionHandler {
             HttpStatus.BAD_REQUEST.value(),
             false,
             "Hành động không được cho phép",
+            null
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBadCredentialsException(
+        BadCredentialsException ex
+    ) {
+        ApiResponse<Void> response = new ApiResponse<>(
+            HttpStatus.BAD_REQUEST.value(),
+            false,
+            "Tài khoản hoặc mật khẩu không đúng",
             null
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);

@@ -1,6 +1,7 @@
 package com.anhpt.res_app.common.utils;
 
 import com.anhpt.res_app.admin.dto.response.ApiInfo;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +17,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ApiScanner {
     private final RequestMappingHandlerMapping handlerMapping;
+    public static Map<String, List<ApiInfo>> currentApis;
+
+    @PostConstruct
+    public void init() {
+        currentApis = getCategorizedApis();
+    }
 
     public Map<String, List<ApiInfo>> getCategorizedApis() {
         Map<String, List<ApiInfo>> categorized = new HashMap<>();

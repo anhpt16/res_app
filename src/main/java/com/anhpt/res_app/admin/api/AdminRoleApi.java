@@ -1,9 +1,12 @@
 package com.anhpt.res_app.admin.api;
 
+import com.anhpt.res_app.admin.dto.request.pemission.PermissionRequest;
 import com.anhpt.res_app.admin.dto.request.role.RoleCreateRequest;
 import com.anhpt.res_app.admin.dto.request.role.RoleSearchRequest;
 import com.anhpt.res_app.admin.dto.request.role.RoleUpdateRequest;
+import com.anhpt.res_app.admin.dto.response.permission.PermissionResponse;
 import com.anhpt.res_app.admin.dto.response.role.RoleResponse;
+import com.anhpt.res_app.admin.service.AdminPermissionService;
 import com.anhpt.res_app.admin.service.AdminRoleService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
@@ -15,12 +18,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/admin/role")
 @RequiredArgsConstructor
 @Validated
 public class AdminRoleApi {
     private final AdminRoleService adminRoleService;
+    private final AdminPermissionService adminPermissionService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<RoleResponse>> create(
@@ -103,6 +110,52 @@ public class AdminRoleApi {
             HttpStatus.OK.value(),
             true,
             "Lấy danh sách role thành công",
+            response
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    // Role - Permission
+    // Thêm quyền hạn cho một vai trò
+    @PostMapping("/{roleId}/permission")
+    public ResponseEntity<ApiResponse<PermissionResponse>> addPermission(
+        @PathVariable @Min(value = 1, message = "Id không hợp lệ") Integer roleId,
+        @RequestBody @Valid PermissionRequest request
+    ) {
+        PermissionResponse response = adminPermissionService.addPermission(roleId, request);
+        ApiResponse<PermissionResponse> apiResponse = new ApiResponse<>(
+            HttpStatus.CREATED.value(),
+            true,
+            "Thêm quyền hạn cho role thành công",
+            response
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+    }
+    // Xóa quyền hạn của một vai trò
+    @DeleteMapping("/{roleId}/permission")
+    public ResponseEntity<ApiResponse<Void>> deletePermission(
+        @PathVariable @Min(value = 1, message = "Id không hợp lệ") Integer roleId,
+        @RequestBody @Valid PermissionRequest request
+    ) {
+        adminPermissionService.deletePermission(roleId, request);
+        ApiResponse<Void> apiResponse = new ApiResponse<>(
+            HttpStatus.NO_CONTENT.value(),
+            true,
+            "Xóa quyền hạn cho role thành công",
+            null
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+    // Lấy ra các quyền hạn của một vai trò
+    @GetMapping("/{roleId}/permission")
+    public ResponseEntity<ApiResponse<Map<String, List<PermissionResponse>>>> getByRoleId(
+        @PathVariable @Min(value = 1, message = "Id không hợp lệ") Integer roleId
+    ) {
+        Map<String, List<PermissionResponse>> response = adminPermissionService.get(roleId);
+        ApiResponse<Map<String, List<PermissionResponse>>> apiResponse = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Lấy quyền hạn cho role thành công",
             response
         );
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);

@@ -40,7 +40,7 @@ public class AdminRoleService {
     public RoleResponse create(RoleCreateRequest request) {
         adminRoleValidation.validateCreate(request);
         Role role = new Role();
-        role.setName(request.getName());
+        role.setName(request.getName().trim().toLowerCase());
         role.setStatus(RoleStatus.ACTIVE);
         role.setCreatedAt(LocalDateTime.now());
         role.setUpdatedAt(LocalDateTime.now());
@@ -53,7 +53,7 @@ public class AdminRoleService {
         adminRoleValidation.validateUpdate(roleId, request);
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Role không tồn tại"));
-        if (request.getName() != null) role.setName(request.getName());
+        if (request.getName() != null) role.setName(request.getName().trim().toLowerCase());
         if (request.getNote() != null) role.setNote(request.getNote());
         role.setUpdatedAt(LocalDateTime.now());
         role = roleRepository.save(role);

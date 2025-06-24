@@ -5,4 +5,6 @@ public class Constants {
     public static final int NUMBER_POST_RELATED = 3;
     // Web - DishMenu
     public static final int NUMBER_DATE_NEW = 10;
+    // UserRole
+    public static final String USER_ROLE = "user";
 }

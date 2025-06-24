@@ -17,7 +17,7 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class PermissionId implements Serializable {
     @Column(name = "role_id")
-    private Long roleId;
+    private Integer roleId;
 
     @Column(name = "feature_uri")
     private String featureUri;

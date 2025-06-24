@@ -27,7 +27,7 @@ public class AdminRoleValidation {
     public void validateCreate(RoleCreateRequest request) {
         Map<String, String> errors = new HashMap<>();
         // Kiểm tra tên tồn tại chưa
-        if (roleRepository.existsByName(request.getName())) {
+        if (roleRepository.existsByName(request.getName().trim().toLowerCase())) {
             String field = FieldNameUtil.getFieldName(RoleCreateRequest::getName);
             errors.put(field, "Đã tồn tại");
         }
@@ -45,7 +45,7 @@ public class AdminRoleValidation {
         Map<String, String> errors = new HashMap<>();
         // Kiểm tra tên
         if (request.getName() != null) {
-            Optional<Role> roleExist = roleRepository.findByName(request.getName());
+            Optional<Role> roleExist = roleRepository.findByName(request.getName().trim().toLowerCase());
             if (roleExist.isPresent() && !roleExist.get().getId().equals(roleId)) {
                 String field = FieldNameUtil.getFieldName(RoleUpdateRequest::getName);
                 errors.put(field, "Đã tồn tại");
