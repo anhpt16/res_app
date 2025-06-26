@@ -1,5 +1,6 @@
 package com.anhpt.res_app.common.repository;
 
+import com.anhpt.res_app.common.dto.result.PermissionResult;
 import com.anhpt.res_app.common.entity.Permission;
 import com.anhpt.res_app.common.entity.Role;
 import com.anhpt.res_app.common.entity.key.PermissionId;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface PermissionRepository extends JpaRepository<Permission, PermissionId> {
@@ -26,5 +28,11 @@ public interface PermissionRepository extends JpaRepository<Permission, Permissi
         @Param("featureMethod") FeatureMethod featureMethod
     );
 
+    @Query("""
+        SELECT DISTINCT new com.anhpt.res_app.common.dto.result.PermissionResult(p.id.featureMethod, p.id.featureUri)
+        FROM Permission p
+        WHERE p.id.roleId IN :roleIds
+    """)
+    Set<PermissionResult> findByRoleIds(@Param("roleIds") Set<Integer> roleIds);
     List<Permission> findByRole(Role role);
 }

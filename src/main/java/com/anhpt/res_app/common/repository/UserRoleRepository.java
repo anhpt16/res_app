@@ -15,11 +15,16 @@ import java.util.List;
 @Repository
 public interface UserRoleRepository extends JpaRepository<UserRole, UserRoleId> {
 
-
     @Transactional
     @Modifying
     @Query("DELETE FROM UserRole ur WHERE ur.id.userId = :userId AND ur.id.roleId = :roleId")
     void deleteByUserIdAndRoleId(@Param("userId") Long userId, @Param("roleId") Integer roleId);
 
     List<UserRole> findByUser(User user);
+
+    @Query("""
+        SELECT ur FROM UserRole ur
+        WHERE ur.id.userId = :userId
+    """)
+    List<UserRole> findByUserId(@Param("userId") Long userId);
 }

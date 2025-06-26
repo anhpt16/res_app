@@ -12,6 +12,7 @@ import com.anhpt.res_app.common.enums.FeatureMethod;
 import com.anhpt.res_app.common.exception.ResourceNotFoundException;
 import com.anhpt.res_app.common.repository.PermissionRepository;
 import com.anhpt.res_app.common.repository.RoleRepository;
+import com.anhpt.res_app.common.utils.ApiCategory;
 import com.anhpt.res_app.common.utils.ApiScanner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -78,12 +79,16 @@ public class AdminPermissionService {
         return mergePermissions(roleId, permissions, currentApis);
     }
 
+    // Kết hợp danh sách Api của hệ thống và Api của vai trò (bỏ qua các Public Api)
     private Map<String, List<PermissionResponse>> mergePermissions(Integer roleId, List<Permission> permissions, Map<String, List<ApiInfo>> currentApis) {
         Map<String, List<PermissionResponse>> result = new LinkedHashMap<>();
 
         // 1. Duyệt từng nhóm API (category)
         for (Map.Entry<String, List<ApiInfo>> entry : currentApis.entrySet()) {
             String category = entry.getKey();
+            // Bỏ qua các Api Public
+            if (ApiCategory.CategoryType.PUBLIC.name().equalsIgnoreCase(category)) continue;
+
             List<ApiInfo> apiInfos = entry.getValue();
             List<PermissionResponse> permissionResponses = new ArrayList<>();
 

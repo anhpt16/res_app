@@ -38,7 +38,7 @@ public class DiscountScheduler {
 
     private void handleDiscountStart(List<Discount> discounts) {
         if (!discounts.isEmpty()) {
-            // Lọc ra những discount có dish tồn tại và tạo map dish -> priceDiscount
+            // Tạo map dish -> priceDiscount
             Map<Dish, BigDecimal> dishPriceDiscountMap = discounts.stream()
                 .collect(Collectors.toMap(
                     Discount::getDish,
