@@ -13,6 +13,7 @@ import com.anhpt.res_app.common.exception.ResourceNotFoundException;
 import com.anhpt.res_app.common.repository.PermissionRepository;
 import com.anhpt.res_app.common.repository.RoleRepository;
 import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import com.anhpt.res_app.common.utils.ApiScanner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -94,6 +95,7 @@ public class AdminPermissionService {
 
             for (ApiInfo apiInfo : apiInfos) {
                 String uri = apiInfo.getPath();
+                String description = apiInfo.getDescription();
                 FeatureMethod method;
 
                 try {
@@ -114,6 +116,7 @@ public class AdminPermissionService {
                         .roleId(roleId)
                         .featureMethod(method)
                         .featureUri(uri)
+                        .description(description)
                         .createdAt(p.getCreatedAt())
                         .isActive(true)
                         .build());
@@ -122,6 +125,7 @@ public class AdminPermissionService {
                         .roleId(roleId)
                         .featureMethod(method)
                         .featureUri(uri)
+                        .description(description)
                         .createdAt(null)
                         .isActive(false)
                         .build());

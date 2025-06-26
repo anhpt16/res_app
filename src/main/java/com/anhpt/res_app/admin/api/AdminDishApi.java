@@ -8,6 +8,8 @@ import com.anhpt.res_app.admin.dto.response.dish.DishShortResponse;
 import com.anhpt.res_app.admin.service.AdminDishService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +22,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin/dish")
 @RequiredArgsConstructor
 @Validated
+@ApiCategory(ApiCategory.CategoryType.M_DISH)
 public class AdminDishApi {
     private final AdminDishService adminDishService;
 
     @PostMapping
+    @ApiDescription("Tạo mới một món ăn")
     public ResponseEntity<ApiResponse<DishResponse>> create(
         @RequestBody @Valid DishCreateRequest request
     ) {
@@ -38,6 +42,7 @@ public class AdminDishApi {
     }
 
     @PatchMapping("/{id}")
+    @ApiDescription("Cập nhật một món ăn")
     public ResponseEntity<ApiResponse<DishResponse>> update(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id,
         @RequestBody @Valid DishUpdateRequest request
@@ -54,6 +59,7 @@ public class AdminDishApi {
 
     // Cập nhật trạng thái món ăn
     @PatchMapping("/{id}/status")
+    @ApiDescription("Cập nhật trạng thái của một món ăn")
     public ResponseEntity<ApiResponse<DishResponse>> updateStatus(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id,
         @RequestParam (name = "status") String status
@@ -70,6 +76,7 @@ public class AdminDishApi {
 
     // Phát hành lại món ăn
     @PatchMapping("/{id}/reissue")
+    @ApiDescription("Phát hành lại món ăn")
     public ResponseEntity<ApiResponse<DishResponse>> reissue(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -85,6 +92,7 @@ public class AdminDishApi {
 
     // Xóa toàn bộ ảnh của món ăn
     @DeleteMapping("/{id}/media")
+    @ApiDescription("Xóa toàn bộ ảnh của món ăn")
     public ResponseEntity<ApiResponse<Void>> deleteAllMedia(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -101,6 +109,7 @@ public class AdminDishApi {
     // Thêm phần xử lý thứ tự ảnh của Dish khi lấy ra danh sách ảnh
 
     @DeleteMapping("/{id}")
+    @ApiDescription("Xóa một món ăn")
     public ResponseEntity<ApiResponse<Void>> delete(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -115,6 +124,7 @@ public class AdminDishApi {
     }
 
     @GetMapping("/{id}")
+    @ApiDescription("Lấy thông tin chi tiết một món ăn")
     public ResponseEntity<ApiResponse<DishResponse>> getById(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -129,6 +139,7 @@ public class AdminDishApi {
     }
 
     @GetMapping
+    @ApiDescription("Lấy danh sách món ăn")
     public ResponseEntity<ApiResponse<PageResponse<DishShortResponse>>> get(
         @ModelAttribute @Valid DishSearchRequest request
     ) {

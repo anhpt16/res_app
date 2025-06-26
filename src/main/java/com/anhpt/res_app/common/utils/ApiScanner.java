@@ -52,13 +52,17 @@ public class ApiScanner {
             // Lấy HTTP methods (GET, POST,...)
             Set<RequestMethod> methods = mappingInfo.getMethodsCondition().getMethods();
             for (String path : paths) {
+                // Lấy mô tả Api (nếu có)
+                ApiDescription apiDescription = handlerMethod.getMethodAnnotation(ApiDescription.class);
+                String description = apiDescription != null ? apiDescription.value() : "";
+
                 if (methods.isEmpty()) {
                     // Không có method cụ thể → ALL
-                    ApiInfo apiInfo = new ApiInfo(path, "ALL");
+                    ApiInfo apiInfo = new ApiInfo(path, "ALL", description);
                     addApiToGroup(categorized, annotation, apiInfo);
                 } else {
                     for (RequestMethod method : methods) {
-                        ApiInfo apiInfo = new ApiInfo(path, method.name());
+                        ApiInfo apiInfo = new ApiInfo(path, method.name(), description);
                         addApiToGroup(categorized, annotation, apiInfo);
                     }
                 }

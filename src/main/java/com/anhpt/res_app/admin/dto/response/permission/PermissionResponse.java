@@ -14,6 +14,7 @@ public class PermissionResponse {
     private final Integer roleId;
     private final FeatureMethod featureMethod;
     private final String featureUri;
+    private final String description;
     private final LocalDateTime createdAt;
     private final Boolean isActive;
 }

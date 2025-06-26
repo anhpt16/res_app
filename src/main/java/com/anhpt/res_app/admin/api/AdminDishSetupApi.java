@@ -7,6 +7,8 @@ import com.anhpt.res_app.admin.dto.response.setup.DishSetupResponse;
 import com.anhpt.res_app.admin.service.AdminDishSetupService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +21,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin/dish-setup")
 @RequiredArgsConstructor
 @Validated
+@ApiCategory(ApiCategory.CategoryType.M_DISH)
 public class AdminDishSetupApi {
     private final AdminDishSetupService adminDishSetupService;
 
     // Thiết lập chuyển trạng thái cho món ăn
     @PostMapping("/{dishId}")
+    @ApiDescription("Thêm thiết lập chuyển trạng thái cho món ăn")
     public ResponseEntity<ApiResponse<DishSetupResponse>> create(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long dishId,
         @RequestBody @Valid DishSetupRequest request
@@ -40,6 +44,7 @@ public class AdminDishSetupApi {
 
     // Cập nhật thông tin chuyển trạng thái của một món ăn
     @PatchMapping("/{dishSetupId}")
+    @ApiDescription("Cập nhật thiết lập chuyển trạng thái của một món ăn")
     public ResponseEntity<ApiResponse<DishSetupResponse>> update(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long dishSetupId,
         @RequestBody @Valid DishSetupUpdateRequest request
@@ -56,6 +61,7 @@ public class AdminDishSetupApi {
 
     // Xóa thiết lập trạng thái của một món ăn
     @DeleteMapping("/{dishSetupId}")
+    @ApiDescription("Xóa thiết lập chuyển trạng thái của một món ăn")
     public ResponseEntity<ApiResponse<Void>> delete(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long dishSetupId
     ) {
@@ -71,6 +77,7 @@ public class AdminDishSetupApi {
 
     // Xem danh sách các món ăn đã thiết lập chuyển trạng thái
     @GetMapping
+    @ApiDescription("Lấy dánh sách thiết lập chuyển trạng thái của món ăn")
     public ResponseEntity<ApiResponse<PageResponse<DishSetupResponse>>> get(
         @ModelAttribute @Valid DishSetupSearchRequest request
     ) {

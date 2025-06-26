@@ -1,6 +1,8 @@
 package com.anhpt.res_app.web.api;
 
 import com.anhpt.res_app.common.dto.response.ApiResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import com.anhpt.res_app.web.dto.response.combo.ComboDishShortResponse;
 import com.anhpt.res_app.web.dto.response.combo.ComboResponse;
 import com.anhpt.res_app.web.dto.response.combo.ComboShortResponse;
@@ -21,11 +23,13 @@ import java.util.List;
 @RequestMapping("/api/combo")
 @RequiredArgsConstructor
 @Validated
+@ApiCategory(ApiCategory.CategoryType.PUBLIC)
 public class WebComboApi {
     private final WebComboService webComboService;
 
     // Lấy danh sách combo đang phát hành
     @GetMapping
+    @ApiDescription("Lấy danh sách các combo (phát hành)")
     public ResponseEntity<ApiResponse<List<ComboShortResponse>>> get() {
         List<ComboShortResponse> comboShortResponses = webComboService.getCombos();
         ApiResponse<List<ComboShortResponse>> apiResponse = new ApiResponse<>(
@@ -39,6 +43,7 @@ public class WebComboApi {
 
     // Lấy chi tiết một combo đang phát hành
     @GetMapping("/{id}")
+    @ApiDescription("Lấy chi tiết một combo (phát hành)")
     public ResponseEntity<ApiResponse<ComboResponse>> getById(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -54,6 +59,7 @@ public class WebComboApi {
 
     // Lấy danh sách các món ăn đang phát hành của một comboVersion
     @GetMapping("/{comboId}/combo-version/{comboVersionId}/dishes")
+    @ApiDescription("Lấy danh sách món ăn (phát hành) của một phiên bản")
     public ResponseEntity<ApiResponse<List<ComboDishShortResponse>>> getComboVersionDishes(
         @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long comboId,
         @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long comboVersionId

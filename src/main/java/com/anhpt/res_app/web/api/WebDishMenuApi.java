@@ -1,6 +1,8 @@
 package com.anhpt.res_app.web.api;
 
 import com.anhpt.res_app.common.dto.response.ApiResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import com.anhpt.res_app.web.dto.response.dish.DishComingResponse;
 import com.anhpt.res_app.web.dto.response.dish.DishDiscountResponse;
 import com.anhpt.res_app.web.dto.response.dish.DishEndingResponse;
@@ -20,11 +22,13 @@ import java.util.List;
 @RequestMapping("/api/menu")
 @RequiredArgsConstructor
 @Slf4j
+@ApiCategory(ApiCategory.CategoryType.PUBLIC)
 public class WebDishMenuApi {
     private final WebDishService webDishService;
 
     // Lấy danh sách món ăn sắp ra mắt
     @GetMapping("/coming")
+    @ApiDescription("Lấy danh sách món ăn sắp ra mắt")
     public ResponseEntity<ApiResponse<List<DishComingResponse>>> getComingDishes() {
         List<DishComingResponse> dishComingResponses = webDishService.getComingDishes();
         ApiResponse<List<DishComingResponse>> apiResponse = new ApiResponse<>(
@@ -38,6 +42,7 @@ public class WebDishMenuApi {
 
     // Lấy danh sách món ăn sắp kết thúc
     @GetMapping("/ending")
+    @ApiDescription("Lấy danh sách món ăn sắp kết thúc")
     public ResponseEntity<ApiResponse<List<DishEndingResponse>>> getEndingDishes() {
         List<DishEndingResponse> dishEndingResponses = webDishService.getEndingDishes();
         ApiResponse<List<DishEndingResponse>> apiResponse = new ApiResponse<>(
@@ -51,6 +56,7 @@ public class WebDishMenuApi {
 
     // Lấy danh sách món ăn mới cập nhật
     @GetMapping("/new")
+    @ApiDescription("Lấy danh sách món ăn mới cập nhật")
     public ResponseEntity<ApiResponse<List<DishShortResponse>>> getNewlyDishes() {
         List<DishShortResponse> dishShortResponses = webDishService.getNewlyDishes();
         ApiResponse<List<DishShortResponse>> apiResponse = new ApiResponse<>(
@@ -64,6 +70,7 @@ public class WebDishMenuApi {
 
     // Lấy danh sách món ăn giảm giá
     @GetMapping("/discount")
+    @ApiDescription("Lấy danh sách món ăn giảm giá")
     public ResponseEntity<ApiResponse<List<DishDiscountResponse>>> getDiscountDishes() {
         List<DishDiscountResponse> dishDiscountResponses = webDishService.getDiscountDishes();
         ApiResponse<List<DishDiscountResponse>> apiResponse = new ApiResponse<>(

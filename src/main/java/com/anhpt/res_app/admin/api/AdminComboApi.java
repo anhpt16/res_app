@@ -6,6 +6,8 @@ import com.anhpt.res_app.admin.service.AdminComboService;
 import com.anhpt.res_app.admin.service.AdminComboVersionService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +22,13 @@ import java.util.List;
 @RequestMapping("/api/admin/combo")
 @RequiredArgsConstructor
 @Validated
+@ApiCategory(ApiCategory.CategoryType.M_DISH)
 public class AdminComboApi {
     private final AdminComboService adminComboService;
     private final AdminComboVersionService adminComboVersionService;
 
     @PostMapping
+    @ApiDescription("Tạo mới một combo")
     public ResponseEntity<ApiResponse<ComboResponse>> create(
         @RequestBody @Valid ComboCreateRequest request
     ) {
@@ -39,6 +43,7 @@ public class AdminComboApi {
     }
 
     @PatchMapping("/{id}")
+    @ApiDescription("Cập nhật thông tin của một combo")
     public ResponseEntity<ApiResponse<ComboResponse>> update(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id,
         @RequestBody @Valid ComboUpdateRequest request
@@ -55,6 +60,7 @@ public class AdminComboApi {
 
     // Cập nhật trạng thái của combo
     @PatchMapping("/{id}/status")
+    @ApiDescription("Cập nhật trạng thái của một combo")
     public ResponseEntity<ApiResponse<ComboResponse>> updateStatus(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id,
         @RequestParam (name = "status") String status
@@ -71,6 +77,7 @@ public class AdminComboApi {
 
     // Phát hành lại combo
     @PatchMapping("/{id}/reissue")
+    @ApiDescription("Phát hành lại combo")
     public ResponseEntity<ApiResponse<ComboResponse>> reissueCombo(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -86,6 +93,7 @@ public class AdminComboApi {
 
     // Xóa ảnh của combo
     @DeleteMapping("/{id}/media")
+    @ApiDescription("Xóa ảnh của một combo")
     public ResponseEntity<ApiResponse<Void>> deleteComboMedia(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -100,6 +108,7 @@ public class AdminComboApi {
     }
 
     @DeleteMapping("/{id}")
+    @ApiDescription("Xóa một combo")
     public ResponseEntity<ApiResponse<Void>> delete(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -114,6 +123,7 @@ public class AdminComboApi {
     }
 
     @GetMapping("/{id}")
+    @ApiDescription("Lấy thông tin chi tiết của một combo")
     public ResponseEntity<ApiResponse<ComboDetailResponse>> getById(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -128,6 +138,7 @@ public class AdminComboApi {
     }
 
     @GetMapping
+    @ApiDescription("Lấy danh sách các combo")
     public ResponseEntity<ApiResponse<PageResponse<ComboListResponse>>> get(
         @ModelAttribute @Valid ComboSearchRequest request
     ) {
@@ -146,6 +157,7 @@ public class AdminComboApi {
 
     // Thêm mới một phiên bản cho một combo
     @PostMapping("/{id}/version")
+    @ApiDescription("Thêm mới một phiên bản cho một combo")
     public ResponseEntity<ApiResponse<ComboVersionResponse>> create(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -161,6 +173,7 @@ public class AdminComboApi {
 
     // Lấy ra thông tin chi tiết về môt phiên bản
     @GetMapping("/{id}/version/{versionId}")
+    @ApiDescription("Lấy thông tin chi tiết về một phiên bản của một combo")
     public ResponseEntity<ApiResponse<ComboVersionResponse>> getVersionById(
         @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
         @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId
@@ -177,6 +190,7 @@ public class AdminComboApi {
 
     // Lấy danh sách các phiên bản của một combo
     @GetMapping("/{id}/version")
+    @ApiDescription("Lấy danh sách các phiên bản của một combo")
     public ResponseEntity<ApiResponse<List<ComboVersionShortResponse>>> getVersionsById(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -192,6 +206,7 @@ public class AdminComboApi {
 
     // Cập nhật trạng thái cho một phiên bản
     @PatchMapping("/{id}/version/{versionId}/status")
+    @ApiDescription("Cập nhật trạng thái cho một phiên bản của một combo")
     public ResponseEntity<ApiResponse<ComboVersionResponse>> updateVersionStatus(
         @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
         @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId,
@@ -209,6 +224,7 @@ public class AdminComboApi {
 
     // Xóa một phiên bản
     @DeleteMapping("/{id}/version/{versionId}")
+    @ApiDescription("Xóa một phiên bản của một combo")
     public ResponseEntity<ApiResponse<Void>> deleteVersion(
         @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
         @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId
@@ -225,6 +241,7 @@ public class AdminComboApi {
 
     // Thêm một món ăn cho phiên bản
     @PostMapping("/{id}/version/{versionId}/dish/{dishId}")
+    @ApiDescription("Thêm món ăn cho một phiên bản")
     public ResponseEntity<ApiResponse<ComboVersionDishResponse>> addDish(
         @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
         @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId,
@@ -244,6 +261,7 @@ public class AdminComboApi {
 
     // Cập nhật số lượng món ăn của một phiên bản
     @PatchMapping("/{id}/version/{versionId}/dish/{dishId}")
+    @ApiDescription("Cập nhật số lượng của một món ăn trong một phiên bản")
     public ResponseEntity<ApiResponse<ComboVersionDishResponse>> updateDish(
         @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
         @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId,
@@ -263,6 +281,7 @@ public class AdminComboApi {
 
     // Xóa một món ăn trong một phiên bản
     @DeleteMapping("/{id}/version/{versionId}/dish/{dishId}")
+    @ApiDescription("Xóa một món ăn khỏi một phiên bản")
     public ResponseEntity<ApiResponse<Void>> deleteDish(
         @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
         @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId,
@@ -280,6 +299,7 @@ public class AdminComboApi {
 
     // Cập nhật thông tin cho một phiên bản
     @PatchMapping("/{id}/version/{versionId}")
+    @ApiDescription("Cập nhật thông tin cho một phiên bản")
     public ResponseEntity<ApiResponse<ComboVersionResponse>> updateVersionById(
         @PathVariable @Min(value = 1, message = "CId không hợp lệ") Long id,
         @PathVariable @Min(value = 1, message = "VId không hợp lệ") Long versionId,

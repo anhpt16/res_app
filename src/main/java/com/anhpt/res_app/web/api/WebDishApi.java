@@ -1,6 +1,8 @@
 package com.anhpt.res_app.web.api;
 
 import com.anhpt.res_app.common.dto.response.ApiResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import com.anhpt.res_app.web.dto.response.dish.DishResponse;
 import com.anhpt.res_app.web.service.WebDishService;
 import jakarta.validation.constraints.Min;
@@ -17,11 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/dish")
 @RequiredArgsConstructor
 @Validated
+@ApiCategory(ApiCategory.CategoryType.PUBLIC)
 public class WebDishApi {
     private final WebDishService webDishService;
 
     // Lấy thông tin chi tiết của một món ăn đang phát hành
     @GetMapping("/{id}")
+    @ApiDescription("Lấy thông tin chi tiết của một món ăn (phát hành)")
     public ResponseEntity<ApiResponse<DishResponse>> getById(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {

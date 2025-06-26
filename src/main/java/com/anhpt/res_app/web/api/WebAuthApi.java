@@ -5,6 +5,7 @@ import com.anhpt.res_app.common.dto.request.auth.RegisterRequest;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.auth.LoginResponse;
 import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import com.anhpt.res_app.web.service.WebAuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Validated
+@ApiCategory(ApiCategory.CategoryType.PUBLIC)
 public class WebAuthApi {
     private final WebAuthService webAuthService;
 
@@ -33,7 +35,7 @@ public class WebAuthApi {
 
 
     @PostMapping("/login")
-    @ApiCategory(ApiCategory.CategoryType.PUBLIC)
+    @ApiDescription("Đăng nhập")
     public ResponseEntity<ApiResponse<Void>> login(
         @RequestBody @Valid LoginRequest request,
         HttpServletResponse response
@@ -59,7 +61,7 @@ public class WebAuthApi {
     }
 
     @PostMapping("/register")
-    @ApiCategory(ApiCategory.CategoryType.PUBLIC)
+    @ApiDescription("Đăng ký tài khoản")
     public ResponseEntity<ApiResponse<Void>> register(
         @RequestBody @Valid RegisterRequest request
     ) throws Exception {

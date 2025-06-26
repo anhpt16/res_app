@@ -9,6 +9,7 @@ import com.anhpt.res_app.admin.service.AdminCollectionService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
 import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +22,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin/collection")
 @RequiredArgsConstructor
 @Validated
+@ApiCategory(ApiCategory.CategoryType.M_POST)
 public class AdminCollectionApi {
     private final AdminCollectionService adminCollectionService;
 
     @PostMapping
+    @ApiDescription("Thêm mới phương tiện vào bộ sưu tập")
     public ResponseEntity<ApiResponse<CollectionResponse>> create(
         @RequestBody @Valid CollectionCreateRequest request
     ) {
@@ -39,6 +42,7 @@ public class AdminCollectionApi {
     }
 
     @PatchMapping("/{id}")
+    @ApiDescription("Cập nhật một phương tiện trong bộ sưu tập")
     public ResponseEntity<ApiResponse<CollectionResponse>> update(
         @PathVariable @Min(value = 1,message = "Id không hợp lệ") Long id,
         @RequestBody @Valid CollectionUpdateRequest request
@@ -54,6 +58,7 @@ public class AdminCollectionApi {
     }
 
     @DeleteMapping("/{id}")
+    @ApiDescription("Xóa một phương tiện khỏi bộ sưu tập")
     public ResponseEntity<ApiResponse<Void>> delete(
         @PathVariable @Min(value = 1,message = "Id không hợp lệ") Long id
     ) {
@@ -68,6 +73,7 @@ public class AdminCollectionApi {
     }
 
     @GetMapping("/{id}")
+    @ApiDescription("Lấy thông tin chi tiết một phương tiện trong bộ sưu tập")
     public ResponseEntity<ApiResponse<CollectionResponse>> getById(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -82,6 +88,7 @@ public class AdminCollectionApi {
     }
 
     @GetMapping
+    @ApiDescription("Lấy danh sách các phương tiện trong bộ sưu tập")
     public ResponseEntity<ApiResponse<PageResponse<CollectionShortResponse>>> get(
         @ModelAttribute @Valid CollectionSearchRequest request
     ) {

@@ -7,22 +7,27 @@ import com.anhpt.res_app.admin.dto.response.user.RoleByUserResponse;
 import com.anhpt.res_app.admin.service.AdminUserService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin/user")
 @RequiredArgsConstructor
-@Slf4j
+@Validated
+@ApiCategory(ApiCategory.CategoryType.M_USER)
 public class AdminUserApi {
     private final AdminUserService adminUserService;
 
     @PostMapping
+    @ApiDescription("Tạo mới một tài khoản")
     public ResponseEntity<ApiResponse<UserResponse>> create(
         @RequestBody @Valid UserCreateRequest request
     ) {
@@ -37,6 +42,7 @@ public class AdminUserApi {
     }
 
     @PatchMapping("/{id}/status")
+    @ApiDescription("Cập nhật trạng thái của một tài khoản")
     public ResponseEntity<ApiResponse<UserResponse>> updateStatus(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id,
         @RequestParam (name = "status") String status
@@ -52,6 +58,7 @@ public class AdminUserApi {
     }
 
     @DeleteMapping("/{id}")
+    @ApiDescription("Xóa một tài khoản")
     public ResponseEntity<ApiResponse<Void>> delete(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -66,6 +73,7 @@ public class AdminUserApi {
     }
 
     @GetMapping("/{id}")
+    @ApiDescription("Lấy thông tin chi tiết của một tài khoản")
     public ResponseEntity<ApiResponse<UserResponse>> getById(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -80,6 +88,7 @@ public class AdminUserApi {
     }
 
     @GetMapping
+    @ApiDescription("Lấy danh sách tài khoản")
     public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> get(
         @ModelAttribute @Valid UserSearchRequest request
     ) {
@@ -95,6 +104,7 @@ public class AdminUserApi {
 
     // UserRole
     @PostMapping("/{userId}/role/{roleId}")
+    @ApiDescription("Thêm mới vai trò cho một tài khoản")
     public ResponseEntity<ApiResponse<RoleByUserResponse>> addRole(
         @PathVariable @Min(value = 1, message = "UId không hợp lệ") Long userId,
         @PathVariable @Min(value = 1, message = "RId không hợp lệ") Integer roleId
@@ -110,6 +120,7 @@ public class AdminUserApi {
     }
 
     @DeleteMapping("/{userId}/role/{roleId}")
+    @ApiDescription("Xóa một vai trò của một tài khoản")
     public ResponseEntity<ApiResponse<Void>> deleteRole(
         @PathVariable @Min(value = 1, message = "UId không hợp lệ") Long userId,
         @PathVariable @Min(value = 1, message = "RId không hợp lệ") Integer roleId
@@ -125,6 +136,7 @@ public class AdminUserApi {
     }
 
     @GetMapping("/{userId}/role")
+    @ApiDescription("Lấy danh sách vai trò của một tài khoản")
     public ResponseEntity<ApiResponse<RoleByUserResponse>> getRolesByUserId(
         @PathVariable @Min(value = 1, message = "UId không hợp lệ") Long userId
     ) {

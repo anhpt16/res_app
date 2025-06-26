@@ -11,6 +11,9 @@ public @interface ApiCategory {
     CategoryType value();
 
     enum CategoryType {
-        PUBLIC, USER, ADMIN
+        PUBLIC,
+        USER,
+        ADMIN, M_USER, M_POST, M_DISH,
+        OTHERS
     }
 }

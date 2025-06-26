@@ -1,6 +1,7 @@
 package com.anhpt.res_app.admin.api;
 
 import com.anhpt.res_app.admin.service.AdminPermissionService;
+import com.anhpt.res_app.common.utils.ApiCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;

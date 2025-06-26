@@ -9,6 +9,8 @@ import com.anhpt.res_app.admin.dto.response.post.PostShortResponse;
 import com.anhpt.res_app.admin.service.AdminPostService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +23,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin/post")
 @RequiredArgsConstructor
 @Validated
+@ApiCategory(ApiCategory.CategoryType.M_POST)
 public class AdminPostApi {
     private final AdminPostService adminPostService;
 
     @PostMapping
+    @ApiDescription("Tạo mới một bài viết")
     public ResponseEntity<ApiResponse<PostResponse>> create(
         @RequestBody @Valid PostCreateRequest request
     ) {
@@ -39,6 +43,7 @@ public class AdminPostApi {
     }
 
     @PatchMapping("/{id}")
+    @ApiDescription("Cập nhật thông tin một bài viết")
     public ResponseEntity<ApiResponse<PostResponse>> update(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id,
         @RequestBody @Valid PostUpdateRequest request
@@ -54,6 +59,7 @@ public class AdminPostApi {
     }
 
     @DeleteMapping("/{id}")
+    @ApiDescription("Xóa một bài viết")
     public ResponseEntity<ApiResponse<Void>> delete(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -68,6 +74,7 @@ public class AdminPostApi {
     }
 
     @GetMapping("/{id}")
+    @ApiDescription("Lấy thông tin chi tiết của một bài viết")
     public ResponseEntity<ApiResponse<PostResponse>> getById(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -82,6 +89,7 @@ public class AdminPostApi {
     }
 
     @GetMapping
+    @ApiDescription("Lấy danh sách bài viết")
     public ResponseEntity<ApiResponse<PageResponse<PostShortResponse>>> get(
         @ModelAttribute @Valid PostSearchRequest request
     ) {
@@ -96,6 +104,7 @@ public class AdminPostApi {
     }
 
     @PatchMapping("/{id}/status")
+    @ApiDescription("Cập nhật trạng thái của một bài viết")
     public ResponseEntity<ApiResponse<PostResponse>> updateStatus(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id,
         @RequestBody PostUpdateStatusRequest request

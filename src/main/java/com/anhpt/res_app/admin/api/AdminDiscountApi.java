@@ -7,6 +7,8 @@ import com.anhpt.res_app.admin.dto.response.discount.DiscountResponse;
 import com.anhpt.res_app.admin.service.AdminDiscountService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +21,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin/discount")
 @RequiredArgsConstructor
 @Validated
+@ApiCategory(ApiCategory.CategoryType.M_DISH)
 public class AdminDiscountApi {
     private final AdminDiscountService adminDiscountService;
 
     @PostMapping("/{dishId}")
+    @ApiDescription("Thiết lập giảm giá cho một món ăn")
     public ResponseEntity<ApiResponse<DiscountResponse>> create(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long dishId,
         @RequestBody @Valid DiscountCreateRequest request
@@ -38,6 +42,7 @@ public class AdminDiscountApi {
     }
 
     @PatchMapping("/{discountId}")
+    @ApiDescription("Cập nhật thiết lập giảm giá cho một món ăn")
     public ResponseEntity<ApiResponse<DiscountResponse>> update(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long discountId,
         @RequestBody @Valid DiscountUpdateRequest request
@@ -53,6 +58,7 @@ public class AdminDiscountApi {
     }
 
     @DeleteMapping("/{discountId}")
+    @ApiDescription("Xóa thiết lập giảm giá của một món ăn")
     public ResponseEntity<ApiResponse<Void>> delete(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long discountId
     ) {
@@ -67,6 +73,7 @@ public class AdminDiscountApi {
     }
 
     @GetMapping
+    @ApiDescription("Lấy danh sách thiết lập giảm giá của món ăn")
     public ResponseEntity<ApiResponse<PageResponse<DiscountResponse>>> get(
         @ModelAttribute @Valid DiscountSearchRequest request
     ) {

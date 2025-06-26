@@ -8,20 +8,26 @@ import com.anhpt.res_app.admin.dto.response.media.MediaShortResponse;
 import com.anhpt.res_app.admin.service.AdminMediaService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin/media")
 @RequiredArgsConstructor
+@Validated
+@ApiCategory(ApiCategory.CategoryType.OTHERS)
 public class AdminMediaApi {
     private final AdminMediaService adminMediaService;
 
     @PostMapping("/upload")
+    @ApiDescription("Tải lên một tệp phương tiện")
     public ResponseEntity<ApiResponse<MediaResponse>> upload(
         @ModelAttribute @Valid MediaUploadRequest request
     ) {
@@ -38,6 +44,7 @@ public class AdminMediaApi {
     }
 
     @GetMapping("/{id}")
+    @ApiDescription("Lấy thông tin chi tiết một tệp phương tiện")
     public ResponseEntity<ApiResponse<MediaResponse>> getDetailMedia(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -53,6 +60,7 @@ public class AdminMediaApi {
 
     // TODO: Sửa lại mã để có thể cập nhật từng phần đối với Media
     @PatchMapping("/{id}")
+    @ApiDescription("Cập nhật một tệp phương tiện")
     public ResponseEntity<ApiResponse<MediaResponse>> update(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id,
         @RequestBody @Valid MediaUpdateRequest request
@@ -68,6 +76,7 @@ public class AdminMediaApi {
     }
 
     @DeleteMapping("/{id}")
+    @ApiDescription("Xóa một tệp phương tiện")
     public ResponseEntity<ApiResponse<Void>> delete(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long id
     ) {
@@ -82,6 +91,7 @@ public class AdminMediaApi {
     }
 
     @GetMapping
+    @ApiDescription("Lấy danh sách tệp phương tiện tải lên")
     public ResponseEntity<ApiResponse<PageResponse<MediaShortResponse>>> search(
         @ModelAttribute @Valid MediaSearchRequest request
     ) {

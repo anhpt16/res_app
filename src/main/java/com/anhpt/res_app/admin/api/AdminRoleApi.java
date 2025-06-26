@@ -10,6 +10,8 @@ import com.anhpt.res_app.admin.service.AdminPermissionService;
 import com.anhpt.res_app.admin.service.AdminRoleService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +27,13 @@ import java.util.Map;
 @RequestMapping("/api/admin/role")
 @RequiredArgsConstructor
 @Validated
+@ApiCategory(ApiCategory.CategoryType.M_USER)
 public class AdminRoleApi {
     private final AdminRoleService adminRoleService;
     private final AdminPermissionService adminPermissionService;
 
     @PostMapping
+    @ApiDescription("Tạo mới một vai trò")
     public ResponseEntity<ApiResponse<RoleResponse>> create(
         @RequestBody @Valid RoleCreateRequest request
     ) {
@@ -44,6 +48,7 @@ public class AdminRoleApi {
     }
 
     @PatchMapping("/{id}")
+    @ApiDescription("Cập nhật thông tin một vai trò")
     public ResponseEntity<ApiResponse<RoleResponse>> update(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Integer id,
         @RequestBody @Valid RoleUpdateRequest request
@@ -59,6 +64,7 @@ public class AdminRoleApi {
     }
 
     @PatchMapping("/{id}/status")
+    @ApiDescription("Cập nhật trạng thái của một vai trò")
     public ResponseEntity<ApiResponse<RoleResponse>> updateStatus(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Integer id,
         @RequestParam (name = "status") String status
@@ -74,6 +80,7 @@ public class AdminRoleApi {
     }
 
     @DeleteMapping("/{id}")
+    @ApiDescription("Xóa một vai trò")
     public ResponseEntity<ApiResponse<Void>> delete(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Integer id
     ) {
@@ -88,6 +95,7 @@ public class AdminRoleApi {
     }
 
     @GetMapping("/{id}")
+    @ApiDescription("Lấy thông tin chi tiết của một vai trò")
     public ResponseEntity<ApiResponse<RoleResponse>> getById(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Integer id
     ) {
@@ -102,6 +110,7 @@ public class AdminRoleApi {
     }
 
     @GetMapping
+    @ApiDescription("Lấy danh sách vai trò")
     public ResponseEntity<ApiResponse<PageResponse<RoleResponse>>> get(
         @ModelAttribute @Valid RoleSearchRequest request
     ) {
@@ -118,6 +127,7 @@ public class AdminRoleApi {
     // Role - Permission
     // Thêm quyền hạn cho một vai trò
     @PostMapping("/{roleId}/permission")
+    @ApiDescription("Thêm quyền hạn cho một vai trò")
     public ResponseEntity<ApiResponse<PermissionResponse>> addPermission(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Integer roleId,
         @RequestBody @Valid PermissionRequest request
@@ -133,6 +143,7 @@ public class AdminRoleApi {
     }
     // Xóa quyền hạn của một vai trò
     @DeleteMapping("/{roleId}/permission")
+    @ApiDescription("Xóa quyền hạn của một vai trò")
     public ResponseEntity<ApiResponse<Void>> deletePermission(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Integer roleId,
         @RequestBody @Valid PermissionRequest request
@@ -148,6 +159,7 @@ public class AdminRoleApi {
     }
     // Lấy ra các quyền hạn của một vai trò
     @GetMapping("/{roleId}/permission")
+    @ApiDescription("Lấy danh sách quyền hạn của một vai trò")
     public ResponseEntity<ApiResponse<Map<String, List<PermissionResponse>>>> getByRoleId(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Integer roleId
     ) {

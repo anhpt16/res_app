@@ -5,6 +5,8 @@ import com.anhpt.res_app.admin.dto.response.TagResponse;
 import com.anhpt.res_app.admin.service.AdminTagService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,11 +19,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin/tag")
 @RequiredArgsConstructor
 @Validated
-@Slf4j
+@ApiCategory(ApiCategory.CategoryType.M_POST)
 public class AdminTagApi {
     private final AdminTagService adminTagService;
 
     @PostMapping
+    @ApiDescription("Tạo mới một thẻ bài viết")
     public ResponseEntity<ApiResponse<TagResponse>> create(
         @RequestBody @Valid TagCreateRequest request
     ) {
@@ -38,6 +41,7 @@ public class AdminTagApi {
     }
 
     @PatchMapping("/{id}")
+    @ApiDescription("Cập nhật một thẻ bài viết")
     public ResponseEntity<ApiResponse<TagResponse>> update(
         @PathVariable Long id,
         @RequestBody @Valid TagCreateRequest request
@@ -55,6 +59,7 @@ public class AdminTagApi {
     }
 
     @DeleteMapping("/{id}")
+    @ApiDescription("Xóa một thẻ bài viết")
     public ResponseEntity<ApiResponse<Void>> delete(
         @PathVariable Long id
     ) {
@@ -71,6 +76,7 @@ public class AdminTagApi {
     }
 
     @GetMapping
+    @ApiDescription("Lấy danh sách thẻ bài viết")
     public ResponseEntity<ApiResponse<PageResponse<TagResponse>>> get(
         @RequestParam (name = "page", defaultValue = "1") Integer page,
         @RequestParam (name = "size", defaultValue = "10") Integer size

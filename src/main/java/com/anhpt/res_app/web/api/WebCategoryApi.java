@@ -2,6 +2,8 @@ package com.anhpt.res_app.web.api;
 
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.PageResponse;
+import com.anhpt.res_app.common.utils.ApiCategory;
+import com.anhpt.res_app.common.utils.ApiDescription;
 import com.anhpt.res_app.web.dto.response.category.CategoryResponse;
 import com.anhpt.res_app.web.dto.response.dish.DishShortResponse;
 import com.anhpt.res_app.web.service.WebCategoryService;
@@ -21,11 +23,13 @@ import java.util.List;
 @RequestMapping("/api/category")
 @RequiredArgsConstructor
 @Validated
+@ApiCategory(ApiCategory.CategoryType.PUBLIC)
 public class WebCategoryApi {
     private final WebCategoryService webCategoryService;
 
     // Lấy danh sách danh mục đang hoạt động
     @GetMapping
+    @ApiDescription("Lấy danh sách các danh mục món ăn (hoạt động)")
     public ResponseEntity<ApiResponse<List<CategoryResponse>>> getCategories() {
         List<CategoryResponse> categoryResponses = webCategoryService.getCategories();
         ApiResponse<List<CategoryResponse>> apiResponse = new ApiResponse<>(
@@ -39,6 +43,7 @@ public class WebCategoryApi {
 
     // Lấy danh sách món ăn đang phát hành của một danh mục
     @GetMapping("/{categoryId}/dishes")
+    @ApiDescription("Lấy danh sách món ăn (phát hành) của một danh mục")
     public ResponseEntity<ApiResponse<List<DishShortResponse>>> getDishes(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long categoryId
     ) {
