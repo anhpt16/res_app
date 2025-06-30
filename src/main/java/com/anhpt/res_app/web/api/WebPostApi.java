@@ -8,12 +8,16 @@ import com.anhpt.res_app.web.dto.request.PostGetRequest;
 import com.anhpt.res_app.web.dto.response.PostResponse;
 import com.anhpt.res_app.web.dto.response.PostShortResponse;
 import com.anhpt.res_app.web.service.WebPostService;
+import com.anhpt.res_app.web.service.WebTagService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/post")
@@ -22,18 +26,25 @@ import org.springframework.web.bind.annotation.*;
 @ApiCategory(ApiCategory.CategoryType.PUBLIC)
 public class WebPostApi {
     private final WebPostService webPostService;
+    private final WebTagService webTagService;
 
     @GetMapping
     @ApiDescription("Lấy danh sách các bài viết (phát hành)")
-    public ResponseEntity<ApiResponse<PageResponse<PostShortResponse>>> get(
+    public ResponseEntity<ApiResponse<Map<String, Object>>> get(
         @ModelAttribute @Valid PostGetRequest request
     ) {
         PageResponse<PostShortResponse> pageResponse = webPostService.get(request);
-        ApiResponse<PageResponse<PostShortResponse>> response = new ApiResponse<>(
+        String tagName = webTagService.getTagNameBySlug(request);
+        // Tạo Map
+        Map<String, Object> listPostResponse = new HashMap<>();
+        listPostResponse.put("pageData", pageResponse);
+        listPostResponse.put("tagName", tagName);
+
+        ApiResponse<Map<String, Object>> response = new ApiResponse<>(
             HttpStatus.OK.value(),
             true,
             "Lấy danh sách bài viết thành công",
-            pageResponse
+            listPostResponse
         );
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -52,4 +63,5 @@ public class WebPostApi {
         );
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 }

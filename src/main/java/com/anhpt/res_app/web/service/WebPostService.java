@@ -7,6 +7,7 @@ import com.anhpt.res_app.common.entity.TagPost;
 import com.anhpt.res_app.common.enums.status.PostStatus;
 import com.anhpt.res_app.common.exception.ResourceNotFoundException;
 import com.anhpt.res_app.common.repository.PostRepository;
+import com.anhpt.res_app.common.repository.TagRepository;
 import com.anhpt.res_app.common.utils.Constants;
 import com.anhpt.res_app.web.dto.WebPostMapper;
 import com.anhpt.res_app.web.dto.WebTagMapper;

@@ -27,7 +27,7 @@ import java.util.Map;
 @RequestMapping("/api/admin/role")
 @RequiredArgsConstructor
 @Validated
-@ApiCategory(ApiCategory.CategoryType.M_USER)
+@ApiCategory(ApiCategory.CategoryType.PUBLIC)
 public class AdminRoleApi {
     private final AdminRoleService adminRoleService;
     private final AdminPermissionService adminPermissionService;

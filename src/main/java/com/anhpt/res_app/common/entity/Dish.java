@@ -58,11 +58,11 @@ public class Dish {
     @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DishMedia> dishMedias = new ArrayList<>();
 
-    @OneToOne(mappedBy = "dish", fetch = FetchType.LAZY)
-    private DishSetup dishSetup;
+//    @OneToOne(mappedBy = "dish", fetch = FetchType.LAZY)
+//    private DishSetup dishSetup;
 
-    @OneToOne(mappedBy = "dish", fetch = FetchType.LAZY)
-    private Discount discount;
+//    @OneToOne(mappedBy = "dish", fetch = FetchType.LAZY)
+//    private Discount discount;
 
     @OneToMany(mappedBy = "dish")
     private List<ComboVersionDish> comboVersionDishes = new ArrayList<>();

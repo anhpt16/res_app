@@ -7,12 +7,15 @@ import com.anhpt.res_app.web.dto.response.dish.DishComingResponse;
 import com.anhpt.res_app.web.dto.response.dish.DishDiscountResponse;
 import com.anhpt.res_app.web.dto.response.dish.DishEndingResponse;
 import com.anhpt.res_app.web.dto.response.dish.DishShortResponse;
+import com.anhpt.res_app.web.service.WebCategoryService;
 import com.anhpt.res_app.web.service.WebDishService;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,6 +28,7 @@ import java.util.List;
 @ApiCategory(ApiCategory.CategoryType.PUBLIC)
 public class WebDishMenuApi {
     private final WebDishService webDishService;
+    private final WebCategoryService webCategoryService;
 
     // Lấy danh sách món ăn sắp ra mắt
     @GetMapping("/coming")
@@ -78,6 +82,22 @@ public class WebDishMenuApi {
             true,
             "Lấy danh sách món ăn giảm giá thành công",
             dishDiscountResponses
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    // Lấy danh sách món ăn thep danh mục
+    @GetMapping("/{categoryId}")
+    @ApiDescription("Lấy danh sách món ăn theo danh mục")
+    public ResponseEntity<ApiResponse<List<DishShortResponse>>> getDishesByCategory(
+        @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long categoryId
+    ) {
+        List<DishShortResponse> dishShortResponses = webCategoryService.getDishes(categoryId);
+        ApiResponse<List<DishShortResponse>> apiResponse = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Lấy danh sách món ăn thành công",
+            dishShortResponses
         );
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }

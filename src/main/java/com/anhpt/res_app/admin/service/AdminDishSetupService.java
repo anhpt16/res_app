@@ -90,10 +90,11 @@ public class AdminDishSetupService {
         );
     }
 
-    // Lấy các bản ghi có milestone trùng khớp với thời điểm hiện tại trong bảng Setup
+    // Lấy các bản ghi có milestone <= với thời điểm hiện tại trong bảng Setup
     public List<DishSetup> getDishSetupsByMilestone(LocalDateTime milestone) {
-        List<DishSetup> dishSetups = dishSetupRepository.findByMilestone(milestone);
+        List<DishSetup> dishSetups = dishSetupRepository.findByMilestoneLessThanEqualOrderByMilestoneAsc(milestone);
         if (dishSetups.isEmpty()) {
+            System.out.println("Empty");
             return Collections.emptyList();
         }
         return dishSetups;

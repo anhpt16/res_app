@@ -8,9 +8,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,50 +24,87 @@ public class DiscountScheduler {
     private final AdminDishService adminDishService;
     private final AdminDiscountService adminDiscountService;
 
-    // Chạy mỗi phút
     @Scheduled(cron = "0 * * * * *")
     public void handleDiscount() {
-        // Lấy thời gian hiện tại (yyyy-mm-dd hh:mm:ss)
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startRange = now.minusMinutes(1);
-        // Tìm kiếm các bản ghi có timeStart trùng với thời gian hiện tại trong bảng Discount
-        List<Discount> discountsStart = adminDiscountService.getByTimeStartBetween(startRange, now);
-        handleDiscountStart(discountsStart);
-        // Tìm kiếm các bản ghi có timeEnd trùng với thời gian hiện tại trong bảng Discount
-        List<Discount> discountsEnd = adminDiscountService.getByTimeEndBetween(startRange, now);
-        handleDiscountEnd(discountsEnd);
+
+        log.debug("Bắt đầu xử lý discount tại thời điểm: {}", now);
+
+        processDiscountStart(startRange, now);
+        processDiscountEnd(startRange, now);
+        processExpiredDiscounts(now);
+
+        log.debug("Hoàn thành xử lý discount tại thời điểm: {}", now);
     }
 
+    @Transactional
+    public void processDiscountStart(LocalDateTime startRange, LocalDateTime now) {
+        try {
+            List<Discount> discountsStart = adminDiscountService.getByTimeStartBetween(startRange, now);
+            if (!discountsStart.isEmpty()) {
+                log.info("Tìm thấy {} discount bắt đầu", discountsStart.size());
+                handleDiscountStart(discountsStart);
+            }
+        } catch (Exception e) {
+            log.error("Lỗi khi xử lý discount bắt đầu: ", e);
+            throw e; // Re-throw để rollback transaction này
+        }
+    }
+
+    @Transactional
+    public void processDiscountEnd(LocalDateTime startRange, LocalDateTime now) {
+        try {
+            List<Discount> discountsEnd = adminDiscountService.getByTimeEndBetween(startRange, now);
+            if (!discountsEnd.isEmpty()) {
+                log.info("Tìm thấy {} discount kết thúc", discountsEnd.size());
+                handleDiscountEnd(discountsEnd);
+            }
+        } catch (Exception e) {
+            log.error("Lỗi khi xử lý discount kết thúc: ", e);
+            throw e;
+        }
+    }
+
+    @Transactional
+    public void processExpiredDiscounts(LocalDateTime now) {
+        try {
+            adminDiscountService.handleExpiredDiscounts(now);
+        } catch (Exception e) {
+            log.error("Lỗi khi xử lý discount hết hạn: ", e);
+            throw e;
+        }
+    }
+
+    // Helper methods (không cần @Transactional)
     private void handleDiscountStart(List<Discount> discounts) {
         if (!discounts.isEmpty()) {
-            // Tạo map dish -> priceDiscount
             Map<Dish, BigDecimal> dishPriceDiscountMap = discounts.stream()
                 .collect(Collectors.toMap(
                     Discount::getDish,
                     Discount::getPriceDiscount,
-                    (existing, replacement) -> replacement // Nếu có duplicate key, lấy giá trị mới
+                    (existing, replacement) -> replacement
                 ));
             if (!dishPriceDiscountMap.isEmpty()) {
-                // Gọi service cập nhật priceDiscount cho các Dish
                 adminDishService.updatePriceDiscountByDishes(dishPriceDiscountMap);
+                log.info("Đã cập nhật priceDiscount cho {} dish", dishPriceDiscountMap.size());
             }
         }
     }
 
     private void handleDiscountEnd(List<Discount> discounts) {
         if (!discounts.isEmpty()) {
-            // Tạo map dish -> priceDiscount
             Map<Dish, BigDecimal> dishPriceDiscountMap = discounts.stream()
+                .map(discount -> new AbstractMap.SimpleEntry<>(discount.getDish(), (BigDecimal) null))
                 .collect(Collectors.toMap(
-                    Discount::getDish,
-                    null,
-                    (existing, replacement) -> replacement // Nếu có duplicate key, lấy giá trị mới
+                    Map.Entry::getKey,
+                    Map.Entry::getValue,
+                    (existing, replacement) -> replacement
                 ));
             if (!dishPriceDiscountMap.isEmpty()) {
-                // Gọi service cập nhật priceDiscount cho các Dish
                 adminDishService.updatePriceDiscountByDishes(dishPriceDiscountMap);
-                // Sau khi cập nhật priceDiscount, xóa bản ghi này trong Discount
                 adminDiscountService.deleteAllByDiscounts(discounts);
+                log.info("Đã reset priceDiscount và xóa {} discount", discounts.size());
             }
         }
     }

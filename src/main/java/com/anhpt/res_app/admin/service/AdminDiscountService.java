@@ -14,6 +14,7 @@ import com.anhpt.res_app.common.exception.ResourceNotFoundException;
 import com.anhpt.res_app.common.repository.DiscountRepository;
 import com.anhpt.res_app.common.repository.DishRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AdminDiscountService {
     // Repository
     private final DiscountRepository discountRepository;
@@ -117,6 +119,29 @@ public class AdminDiscountService {
         }
         return discounts;
     }
+
+    // Tìm kiếm và xử lý các discount đã hết hạn
+    @Transactional
+    public void handleExpiredDiscounts(LocalDateTime currentTime) {
+        List<Discount> expiredDiscounts = discountRepository.findExpiredDiscounts(currentTime);
+        if (!expiredDiscounts.isEmpty()) {
+            log.info("Tìm thấy {} discount đã hết hạn, bắt đầu xử lý", expiredDiscounts.size());
+            // Reset priceDiscount cho các dish có discount hết hạn
+            expiredDiscounts.forEach(discount -> {
+                Dish dish = discount.getDish();
+                if (dish != null) {
+                    dish.setPriceDiscount(null);
+                    dish.setUpdatedAt(LocalDateTime.now());
+                    dishRepository.save(dish);
+                    log.debug("Đã reset priceDiscount cho dish: {}", dish.getName());
+                }
+            });
+            // Xóa các discount đã hết hạn
+            discountRepository.deleteAll(expiredDiscounts);
+            log.info("Đã xóa {} discount hết hạn", expiredDiscounts.size());
+        }
+    }
+
     // Xóa toàn bộ các Discount
     public void deleteAllByDiscounts(List<Discount> discounts) {
         discountRepository.deleteAll(discounts);

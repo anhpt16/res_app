@@ -17,16 +17,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final ApiAuthenticationRequirementFilter apiAuthenticationRequirementFilter;
-    private final JwtAuthorizationFilter jwtAuthorizationFilter;
+//    private final ApiAuthenticationRequirementFilter apiAuthenticationRequirementFilter;
+//    private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-            .addFilterBefore(apiAuthenticationRequirementFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(jwtAuthorizationFilter, ApiAuthenticationRequirementFilter.class);
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+//            .addFilterBefore(apiAuthenticationRequirementFilter, UsernamePasswordAuthenticationFilter.class)
+//            .addFilterAfter(jwtAuthorizationFilter, ApiAuthenticationRequirementFilter.class);
         return http.build();
     }
 

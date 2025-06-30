@@ -19,4 +19,6 @@ public interface DishSetupRepository extends JpaRepository<DishSetup, Long>, Jpa
     Optional<DishSetup> findByDishId(Long dishId);
 
     List<DishSetup> findByMilestone(LocalDateTime milestone);
+    // Lấy các bản ghi có milestone nhỏ hơn hoặc bằng thời điểm hiện tại
+    List<DishSetup> findByMilestoneLessThanEqualOrderByMilestoneAsc(LocalDateTime milestone);
 }

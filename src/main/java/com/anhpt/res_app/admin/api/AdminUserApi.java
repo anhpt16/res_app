@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin/user")
 @RequiredArgsConstructor
 @Validated
-@ApiCategory(ApiCategory.CategoryType.M_USER)
+@ApiCategory(ApiCategory.CategoryType.PUBLIC)
 public class AdminUserApi {
     private final AdminUserService adminUserService;
 

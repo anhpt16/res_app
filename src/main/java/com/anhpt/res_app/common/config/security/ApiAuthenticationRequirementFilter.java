@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-@Component
+//@Component
 @Slf4j
 public class ApiAuthenticationRequirementFilter extends OncePerRequestFilter {
 
@@ -43,12 +43,14 @@ public class ApiAuthenticationRequirementFilter extends OncePerRequestFilter {
             ErrorFilter.writeErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "Đã có lỗi sảy ra");
             return;
         }
+
+        boolean requiresAuth = true;
         // 4. Nếu tìm thấy api trùng và api public
         if (categoryMatchResult.isMatched() && !categoryMatchResult.isUncategorized()) {
             // 5. Nếu danh mục là public thì requiresAuth = false
-            boolean requiresAuth = !categoryMatchResult.getCategory().equals(ApiCategory.CategoryType.PUBLIC);
-            request.setAttribute("requiresAuth", requiresAuth);
+            requiresAuth = !categoryMatchResult.getCategory().equals(ApiCategory.CategoryType.PUBLIC);
         }
+        request.setAttribute("requiresAuth", requiresAuth);
         filterChain.doFilter(request, response);
     }
 }

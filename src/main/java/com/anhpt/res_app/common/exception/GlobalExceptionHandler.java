@@ -6,15 +6,18 @@ import com.anhpt.res_app.common.exception.file.FileInvalidException;
 import com.anhpt.res_app.common.exception.file.FileUploadException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.ClientAbortException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.nio.file.AccessDeniedException;
@@ -242,36 +245,53 @@ public class GlobalExceptionHandler {
     }
     // Exception - Media
     @ExceptionHandler(MediaNotFoundException.class)
-    public ResponseEntity<ApiResponse<Object>> handleMediaNotFoundException(
+    public ResponseEntity<Object> handleMediaNotFoundException(
         MediaNotFoundException ex
     ) {
         log.warn("Không tìm thấy file: {}", ex.getMessage());
-        ApiResponse<Object> response = new ApiResponse<>(
-            HttpStatus.BAD_REQUEST.value(),
-            false,
-            "File không hợp lệ",
-            null
-        );
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(response);
+        // Return simple error response without JSON to avoid content type conflicts
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
     @ExceptionHandler(MediaException.class)
-    public ResponseEntity<ApiResponse<Object>> handleMediaException(
+    public ResponseEntity<Object> handleMediaException(
         Exception ex
     ) {
-        log.error("Lỗi không xác định: ", ex);
+        log.error("Lỗi media: ", ex);
+        // Return simple error response without JSON to avoid content type conflicts
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    // Handle client disconnection during media streaming
+    @ExceptionHandler({ClientAbortException.class, AsyncRequestNotUsableException.class})
+    public ResponseEntity<Void> handleClientAbortException(Exception ex) {
+        log.debug("Client đã ngắt kết nối trong quá trình stream media: {}", ex.getMessage());
+        // Return empty response since client has disconnected
+        return ResponseEntity.noContent().build();
+    }
+
+    // Handle HttpMessageNotWritableException during media streaming
+    @ExceptionHandler(HttpMessageNotWritableException.class)
+    public ResponseEntity<ApiResponse<Object>> handleHttpMessageNotWritableException(
+        HttpMessageNotWritableException ex
+    ) {
+        // Check if this is a media streaming error
+        String message = ex.getMessage();
+        if (message != null && (message.contains("video/") || message.contains("image/") || 
+            message.contains("audio/") || message.contains("Content-Type"))) {
+            log.debug("Lỗi ghi response media stream: {}", ex.getMessage());
+            // Return empty response for media streaming errors to avoid content type conflicts
+            return ResponseEntity.noContent().build();
+        }
+        
+        log.warn("Lỗi ghi response: {}", ex.getMessage());
         ApiResponse<Object> response = new ApiResponse<>(
             HttpStatus.INTERNAL_SERVER_ERROR.value(),
             false,
-            "Đã xảy ra lỗi. Vui lòng thử lại sau",
+            "Lỗi xử lý response",
             null
         );
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(response);
     }
-
-
-    
 }

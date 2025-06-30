@@ -1,5 +1,6 @@
 package com.anhpt.res_app.web.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ public class PostShortResponse {
     private final Long id;
     private final String title;
     private final String slug;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private final LocalDateTime publishedAt;
     // Thêm
     private String thumbnail;
