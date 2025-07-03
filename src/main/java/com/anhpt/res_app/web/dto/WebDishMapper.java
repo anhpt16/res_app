@@ -12,8 +12,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = WebDishMediaMapper.class)
 public interface WebDishMapper {
 
-    @Mapping(source = "dishMedias", target = "medias")
-    DishResponse toDishResponse(Dish dish);
+    @Mapping(source = "dish.dishMedias", target = "medias")
+    @Mapping(source = "categoryName", target = "categoryName")
+    DishResponse toDishResponse(Dish dish, String categoryName);
 
     @Mapping(source = "thumbnail", target = "thumbnail")
     DishShortResponse toDishShortResponse(Dish dish, String thumbnail);

@@ -265,31 +265,29 @@ public class AdminDishService {
     }
 
     // Cập nhật priceDiscount
-    public void updatePriceDiscountByDishes(Map<Dish, BigDecimal> dishPriceDiscountMap) {
+    public void updatePriceDiscountByDishes(Map<Long, BigDecimal> dishPriceDiscountMap) {
         // Cập nhật priceDiscount cho các Dish
-        dishPriceDiscountMap.forEach((dish, priceDiscount) -> {
+        dishPriceDiscountMap.forEach((dishId, priceDiscount) -> {
+            Dish dish = dishRepository.findById(dishId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Dish"));
             dish.setPriceDiscount(priceDiscount);
             dish.setUpdatedAt(LocalDateTime.now());
+            dishRepository.save(dish);
         });
-        // Lấy danh sách Dish đã cập nhật
-        List<Dish> updatedDishes = new ArrayList<>(dishPriceDiscountMap.keySet());
-        // Lưu vào DB
-        dishRepository.saveAll(updatedDishes);
     }
 
     // Cập nhật trạng thái (DishSetup)
-    public void updateDishSetupStatus(Map<Dish, DishSetup> dishesMapByDishSetups) {
+    public void updateDishSetupStatus(Map<Long, DishSetup> dishesMapByDishSetups) {
         // Cập nhật trạng thái của các Dish
-        dishesMapByDishSetups.forEach((dish, dishSetup) -> {
+        dishesMapByDishSetups.forEach((dishId, dishSetup) -> {
+            Dish dish = dishRepository.findById(dishId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Dish"));
             dish.setStatus(dishSetup.getNextStatus());
             dish.setUpdatedAt(LocalDateTime.now());
             // Kiểm tra trạng thái tiếp theo là PUBLISHED
             if (dishSetup.getNextStatus().equals(DishStatus.PUBLISHED) && dish.getPublishedAt() == null) dish.setPublishedAt(LocalDateTime.now());
+            dishRepository.save(dish);
         });
-        // Lấy danh sách Dish đã cập nhật
-        List<Dish> updatedDishes = new ArrayList<>(dishesMapByDishSetups.keySet());
-        // Lưu vào DB
-        dishRepository.saveAll(updatedDishes);
     }
 
 }

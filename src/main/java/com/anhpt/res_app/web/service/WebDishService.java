@@ -1,9 +1,6 @@
 package com.anhpt.res_app.web.service;
 
-import com.anhpt.res_app.common.entity.Discount;
-import com.anhpt.res_app.common.entity.Dish;
-import com.anhpt.res_app.common.entity.DishMedia;
-import com.anhpt.res_app.common.entity.DishSetup;
+import com.anhpt.res_app.common.entity.*;
 import com.anhpt.res_app.common.enums.status.DishStatus;
 import com.anhpt.res_app.common.exception.ResourceNotFoundException;
 import com.anhpt.res_app.common.repository.DiscountRepository;
@@ -17,10 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,7 +34,8 @@ public class WebDishService {
         webDishValidation.validateGetById(dishId);
         Dish dish = dishRepository.findById(dishId)
             .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Dish"));
-        DishResponse dishResponse = webDishMapper.toDishResponse(dish);
+        String categoryName = Optional.ofNullable(dish.getCategory()).map(Category::getName).orElse(null);
+        DishResponse dishResponse = webDishMapper.toDishResponse(dish, categoryName);
         return dishResponse;
     }
 
@@ -108,8 +103,10 @@ public class WebDishService {
 
     // Lấy danh sách món ăn giảm giá
     public List<DishDiscountResponse> getDiscountDishes() {
+        // Lấy thời gian hiện tại
+        LocalDateTime currentTime = LocalDateTime.now();
         // Lấy danh sách các món ăn trong bảng Discount
-        List<Discount> discounts = discountRepository.findAll();
+        List<Discount> discounts = discountRepository.findActiveDiscounts(currentTime);
         if (discounts.isEmpty()) {
             return Collections.emptyList();
         }

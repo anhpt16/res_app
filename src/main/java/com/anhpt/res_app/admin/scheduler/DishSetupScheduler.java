@@ -4,6 +4,7 @@ import com.anhpt.res_app.admin.service.AdminDishService;
 import com.anhpt.res_app.admin.service.AdminDishSetupService;
 import com.anhpt.res_app.common.entity.Dish;
 import com.anhpt.res_app.common.entity.DishSetup;
+import com.anhpt.res_app.common.repository.DishSetupRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,8 +24,7 @@ import java.util.stream.Collectors;
 public class DishSetupScheduler {
     private final AdminDishService adminDishService;
     private final AdminDishSetupService adminDishSetupService;
-
-
+    private final DishSetupRepository dishSetupRepository;
     /**
      * - Món ăn sắp ra mắt (active -> published): cho khách hàng đặt trước món ăn tính từ thời điểm phát hành
      * - Món ăn sắp kết thúc (published -> inactive): không cho khách hàng đặt món ăn sau thời điểm kết thúc
@@ -48,17 +48,17 @@ public class DishSetupScheduler {
         List<DishSetup> dishSetups = adminDishSetupService.getDishSetupsByMilestone(now);
         if (!dishSetups.isEmpty()) {
             // Tạo map dish -> setup
-            Map<Dish, DishSetup> dishesMapBySetups = dishSetups.stream()
+            Map<Long, DishSetup> dishesMapBySetups = dishSetups.stream()
                 .filter(setup -> setup.getDish() != null)
                 .collect(Collectors.toMap(
-                    DishSetup::getDish,
+                    setup -> setup.getDish().getId(),
                     Function.identity()
                 ));
             if (!dishesMapBySetups.isEmpty()) {
                 // Gọi Service chuyển trạng thái của các Dish
                 adminDishService.updateDishSetupStatus(dishesMapBySetups);
                 // Sau khi chuyển trạng thái, xóa bản ghi hiện tại trong bảng Setup
-                adminDishSetupService.deleteDishSetups(dishSetups);
+                dishSetupRepository.deleteAll(dishSetups);
             }
         }
     }

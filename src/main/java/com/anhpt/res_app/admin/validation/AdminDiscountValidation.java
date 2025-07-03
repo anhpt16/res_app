@@ -38,6 +38,12 @@ public class AdminDiscountValidation {
         // Kiểm tra thời gian bắt đầu và thời gian kết thúc hợp lệ
         LocalDateTime timeStart = request.getTimeStart();
         LocalDateTime timeEnd = request.getTimeEnd();
+        LocalDateTime currentTime = LocalDateTime.now();
+        // Kiểm tra thời gian bắt đầu phải lớn hơn thời điểm hiện tại
+        if (timeStart.isBefore(currentTime) || timeStart.isEqual(currentTime)) {
+            String field = FieldNameUtil.getFieldName(DiscountCreateRequest::getTimeStart);
+            errors.put(field, "Thời gian bắt đầu phải lớn hơn thời điểm hiện tại");
+        }
         if (timeStart.isAfter(timeEnd)) {
             String field = FieldNameUtil.getFieldName(DiscountCreateRequest::getTimeStart);
             errors.put(field, "Thời gian bắt đầu phải trước thời gian kết thúc");
@@ -61,10 +67,20 @@ public class AdminDiscountValidation {
         // Kiểm tra Discount tồn tại
         Discount discount = discountRepository.findById(discountId)
             .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Discount"));
+
+        LocalDateTime currentTime = LocalDateTime.now();
+
         // Kiểm tra thời gian bắt đầu và thời gian kết thúc hợp lệ
         if (request.getTimeStart() != null && request.getTimeEnd() == null) {
             LocalDateTime timeStart = request.getTimeStart();
             LocalDateTime timeEnd = discount.getTimeEnd();
+
+            // Kiểm tra thời gian bắt đầu phải lớn hơn thời điểm hiện tại
+            if (timeStart.isBefore(currentTime) || timeStart.isEqual(currentTime)) {
+                String field = FieldNameUtil.getFieldName(DiscountUpdateRequest::getTimeStart);
+                errors.put(field, "Thời gian bắt đầu phải lớn hơn thời điểm hiện tại");
+            }
+
             if (timeStart.isAfter(timeEnd)) {
                 String field = FieldNameUtil.getFieldName(DiscountUpdateRequest::getTimeStart);
                 errors.put(field, "Thời gian bắt đầu phải trước thời gian kết thúc");
@@ -81,6 +97,13 @@ public class AdminDiscountValidation {
         if (request.getTimeStart() != null && request.getTimeEnd() != null) {
             LocalDateTime timeStart = request.getTimeStart();
             LocalDateTime timeEnd = request.getTimeEnd();
+
+            // Kiểm tra thời gian bắt đầu phải lớn hơn thời điểm hiện tại
+            if (timeStart.isBefore(currentTime) || timeStart.isEqual(currentTime)) {
+                String field = FieldNameUtil.getFieldName(DiscountUpdateRequest::getTimeStart);
+                errors.put(field, "Thời gian bắt đầu phải lớn hơn thời điểm hiện tại");
+            }
+
             if (timeStart.isAfter(timeEnd)) {
                 String field = FieldNameUtil.getFieldName(DiscountUpdateRequest::getTimeStart);
                 errors.put(field, "Thời gian bắt đầu phải trước thời gian kết thúc");

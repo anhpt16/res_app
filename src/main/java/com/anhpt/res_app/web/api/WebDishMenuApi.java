@@ -87,7 +87,7 @@ public class WebDishMenuApi {
     }
 
     // Lấy danh sách món ăn thep danh mục
-    @GetMapping("/{categoryId}")
+    @GetMapping("/{categoryId}/dishes")
     @ApiDescription("Lấy danh sách món ăn theo danh mục")
     public ResponseEntity<ApiResponse<List<DishShortResponse>>> getDishesByCategory(
         @PathVariable @Min(value = 1, message = "Id không hợp lệ") Long categoryId

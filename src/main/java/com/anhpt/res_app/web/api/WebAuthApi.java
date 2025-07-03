@@ -45,10 +45,10 @@ public class WebAuthApi {
         // Tạo HttpOnly Cookie
         Cookie accessTokenCookie = new Cookie("accessToken", loginResponse.getAccessToken());
         accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setSecure(cookieSecure);
+        accessTokenCookie.setSecure(false);
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7 ngày
-        if (!cookieDomain.equals("localhost")) accessTokenCookie.setDomain(cookieDomain);
+//        if (!cookieDomain.equals("localhost")) accessTokenCookie.setDomain(cookieDomain);
         response.addCookie(accessTokenCookie);
 
         ApiResponse<Void> apiResponse = new ApiResponse<>(

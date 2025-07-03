@@ -27,4 +27,8 @@ public interface DiscountRepository extends JpaRepository<Discount, Long>, JpaSp
     // Tìm các discount đã hết hạn (timeEnd < thời gian hiện tại)
     @Query("SELECT d FROM Discount d WHERE d.timeEnd < :currentTime")
     List<Discount> findExpiredDiscounts(@Param("currentTime") LocalDateTime currentTime);
+
+    // Tìm các discount đang hoạt động (thời gian hiện tại nằm trong khoảng timeStart và timeEnd)
+    @Query("SELECT d FROM Discount d WHERE d.timeStart <= :currentTime AND d.timeEnd >= :currentTime")
+    List<Discount> findActiveDiscounts(@Param("currentTime") LocalDateTime currentTime);
 }

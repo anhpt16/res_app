@@ -34,6 +34,7 @@ public interface WebComboMapper {
 
     @Mapping(source = "dish.id", target = "id")
     @Mapping(source = "dish.name", target = "name")
+    @Mapping(source = "dish.unit", target = "unit")
     @Mapping(source = "comboVersionDish.displayOrder", target = "displayOrder")
     @Mapping(source = "comboVersionDish.count", target = "count")
     @Mapping(source = "thumbnail", target = "thumbnail")

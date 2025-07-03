@@ -10,5 +10,6 @@ public class ComboDishShortResponse {
     private String name;
     private Integer displayOrder;
     private Integer count;
+    private String unit;
     private String thumbnail;
 }

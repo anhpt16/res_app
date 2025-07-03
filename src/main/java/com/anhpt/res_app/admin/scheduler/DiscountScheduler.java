@@ -76,12 +76,12 @@ public class DiscountScheduler {
         }
     }
 
-    // Helper methods (không cần @Transactional)
+    
     private void handleDiscountStart(List<Discount> discounts) {
         if (!discounts.isEmpty()) {
-            Map<Dish, BigDecimal> dishPriceDiscountMap = discounts.stream()
+            Map<Long, BigDecimal> dishPriceDiscountMap = discounts.stream()
                 .collect(Collectors.toMap(
-                    Discount::getDish,
+                    discount -> discount.getDish().getId(),
                     Discount::getPriceDiscount,
                     (existing, replacement) -> replacement
                 ));
@@ -94,8 +94,8 @@ public class DiscountScheduler {
 
     private void handleDiscountEnd(List<Discount> discounts) {
         if (!discounts.isEmpty()) {
-            Map<Dish, BigDecimal> dishPriceDiscountMap = discounts.stream()
-                .map(discount -> new AbstractMap.SimpleEntry<>(discount.getDish(), (BigDecimal) null))
+            Map<Long, BigDecimal> dishPriceDiscountMap = discounts.stream()
+                .map(discount -> new AbstractMap.SimpleEntry<>(discount.getDish().getId(), (BigDecimal) null))
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
                     Map.Entry::getValue,
