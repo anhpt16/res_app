@@ -196,6 +196,18 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+    @ExceptionHandler(TokenExpired.class)
+    public ResponseEntity<ApiResponse<Void>> handleTokenExpiredException(
+        TokenExpired ex
+    ) {
+        ApiResponse<Void> response = new ApiResponse<>(
+            HttpStatus.UNAUTHORIZED.value(),
+            false,
+            "Token không hợp lệ",
+            null
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
 
     // Exception xử lý File
     @ExceptionHandler(FileUploadException.class)

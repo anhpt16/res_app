@@ -4,6 +4,7 @@ import com.anhpt.res_app.common.dto.request.auth.LoginRequest;
 import com.anhpt.res_app.common.dto.request.auth.RegisterRequest;
 import com.anhpt.res_app.common.dto.response.auth.LoginResponse;
 import com.anhpt.res_app.common.dto.response.auth.RoleInfo;
+import com.anhpt.res_app.common.dto.response.auth.TokenExtractor;
 import com.anhpt.res_app.common.dto.response.auth.UserInfo;
 import com.anhpt.res_app.common.entity.Role;
 import com.anhpt.res_app.common.entity.User;
@@ -11,11 +12,13 @@ import com.anhpt.res_app.common.entity.UserRole;
 import com.anhpt.res_app.common.enums.status.UserStatus;
 import com.anhpt.res_app.common.enums.type.UserType;
 import com.anhpt.res_app.common.exception.BadCredentialsException;
+import com.anhpt.res_app.common.exception.TokenExpired;
 import com.anhpt.res_app.common.repository.RoleRepository;
 import com.anhpt.res_app.common.repository.UserRepository;
 import com.anhpt.res_app.common.utils.Constants;
 import com.anhpt.res_app.common.utils.JwtTokenProvider;
 import com.anhpt.res_app.web.validation.WebAuthValidation;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -74,7 +77,39 @@ public class WebAuthService {
             .collect(Collectors.toList());
         // Tạo Token
         String token = jwtTokenProvider.generateAccessToken(userInfo, roleInfos);
-        return LoginResponse.builder().accessToken(token).build();
+        return LoginResponse.builder()
+            .accessToken(token)
+            .id(userInfo.getId())
+            .name(userInfo.getName())
+            .roles(roleInfos)
+            .build();
+    }
+
+    public TokenExtractor extract(String token) {
+        if (token == null) {
+            throw new IllegalArgumentException("Token không tồn tại");
+        }
+        try {
+            // Validate token first
+            jwtTokenProvider.parseClaims(token); // This will throw exception if token is invalid or expired
+
+            // If validation passes, extract information
+            UserInfo userInfo = jwtTokenProvider.getUserInfo(token);
+            List<RoleInfo> roleInfos = jwtTokenProvider.getRoleInfos(token);
+
+            return TokenExtractor.builder()
+                .id(userInfo.getId())
+                .name(userInfo.getName())
+                .roles(roleInfos)
+                .build();
+
+        } catch (JwtException e) {
+            log.warn("Token hết hạn hoặc không hợp lệ: {}", e.getMessage());
+            throw new TokenExpired("Token hết hạn hoặc không hợp lệ");
+        } catch (Exception e) {
+            log.error("Lỗi không xác định khi extract token: {}", e.getMessage(), e);
+            return null;
+        }
     }
 
     @Transactional

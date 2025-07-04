@@ -4,6 +4,7 @@ import com.anhpt.res_app.common.dto.request.auth.LoginRequest;
 import com.anhpt.res_app.common.dto.request.auth.RegisterRequest;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import com.anhpt.res_app.common.dto.response.auth.LoginResponse;
+import com.anhpt.res_app.common.dto.response.auth.TokenExtractor;
 import com.anhpt.res_app.common.utils.ApiCategory;
 import com.anhpt.res_app.common.utils.ApiDescription;
 import com.anhpt.res_app.web.service.WebAuthService;
@@ -11,14 +12,12 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,11 +31,12 @@ public class WebAuthApi {
     private String cookieDomain;
     @Value("${jwt.cookie.secure:false}")
     private boolean cookieSecure;
-
+    @Value("${jwt.access-token-validity}")
+    private long accessTokenValidityInMs;
 
     @PostMapping("/login")
     @ApiDescription("Đăng nhập")
-    public ResponseEntity<ApiResponse<Void>> login(
+    public ResponseEntity<ApiResponse<LoginResponse>> login(
         @RequestBody @Valid LoginRequest request,
         HttpServletResponse response
     ) {
@@ -47,15 +47,15 @@ public class WebAuthApi {
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setSecure(false);
         accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7 ngày
+        accessTokenCookie.setMaxAge((int) (accessTokenValidityInMs / 1000));
 //        if (!cookieDomain.equals("localhost")) accessTokenCookie.setDomain(cookieDomain);
         response.addCookie(accessTokenCookie);
 
-        ApiResponse<Void> apiResponse = new ApiResponse<>(
+        ApiResponse<LoginResponse> apiResponse = new ApiResponse<>(
             HttpStatus.OK.value(),
             true,
             "Đăng nhập thành công",
-            null
+            loginResponse
         );
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
@@ -75,5 +75,43 @@ public class WebAuthApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
+    @GetMapping("/me")
+    @ApiDescription("Lấy thông tin dựa trên Token")
+    public ResponseEntity<ApiResponse<TokenExtractor>> extractToken(
+        @CookieValue (name = "accessToken", required = false) String token
+    ) {
+        TokenExtractor tokenExtractor = webAuthService.extract(token);
+        if (token == null) {
+            throw new IllegalArgumentException("Token không hợp lệ");
+        }
+        ApiResponse<TokenExtractor> apiResponse = new ApiResponse<>(
+            HttpStatus.CREATED.value(),
+            true,
+            "Lấy thông tin thành công",
+            tokenExtractor
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+    }
+
+    @PostMapping("/logout")
+    @ApiDescription("Đăng xuất")
+    public ResponseEntity<ApiResponse<Void>> logout(
+        @CookieValue (name = "accessToken", required = false) String token,
+        HttpServletResponse response
+    ) {
+        Cookie accessTokenCookie = new Cookie("accessToken", null);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setSecure(false);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(0);
+        response.addCookie(accessTokenCookie);
+        ApiResponse<Void> apiResponse = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Đăng xuất thành công",
+            null
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
 
 }

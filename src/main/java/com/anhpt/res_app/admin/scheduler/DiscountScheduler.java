@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -94,13 +95,13 @@ public class DiscountScheduler {
 
     private void handleDiscountEnd(List<Discount> discounts) {
         if (!discounts.isEmpty()) {
-            Map<Long, BigDecimal> dishPriceDiscountMap = discounts.stream()
-                .map(discount -> new AbstractMap.SimpleEntry<>(discount.getDish().getId(), (BigDecimal) null))
-                .collect(Collectors.toMap(
-                    Map.Entry::getKey,
-                    Map.Entry::getValue,
-                    (existing, replacement) -> replacement
-                ));
+            Map<Long, BigDecimal> dishPriceDiscountMap = new HashMap<>();
+            for (Discount discount : discounts) {
+                Dish dish = discount.getDish();
+                if (dish != null) {
+                    dishPriceDiscountMap.put(dish.getId(), null); // Gán null an toàn
+                }
+            }
             if (!dishPriceDiscountMap.isEmpty()) {
                 adminDishService.updatePriceDiscountByDishes(dishPriceDiscountMap);
                 adminDiscountService.deleteAllByDiscounts(discounts);
