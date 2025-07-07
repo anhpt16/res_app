@@ -26,7 +26,6 @@ public class Reservation {
     @Column(name = "end_time")
     private LocalTime endTime;
 
-    @Column(precision = 10, scale = 2)
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)

@@ -31,7 +31,6 @@ public class Invoice {
     @Enumerated(EnumType.STRING)
     private InvoiceStatus status;
 
-    @Column(precision = 10, scale = 2)
     private BigDecimal prepayment;
 
     @Column(name = "completed_at")
@@ -40,7 +39,7 @@ public class Invoice {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "total_price", precision = 10, scale = 2)
+    @Column(name = "total_price")
     private BigDecimal totalPrice;
 
     @OneToOne(fetch = FetchType.LAZY)

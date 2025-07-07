@@ -19,6 +19,9 @@ public class DeskMedia {
     @EmbeddedId
     private DeskMediaId id = new DeskMediaId();
 
+    @Column(name = "display_order")
+    private Integer displayOrder;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

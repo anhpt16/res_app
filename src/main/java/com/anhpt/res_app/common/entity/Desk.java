@@ -1,5 +1,8 @@
 package com.anhpt.res_app.common.entity;
 
+import com.anhpt.res_app.common.enums.DeskPosition;
+import com.anhpt.res_app.common.enums.DeskSeat;
+import com.anhpt.res_app.common.enums.DeskType;
 import com.anhpt.res_app.common.enums.status.DeskStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,14 +24,13 @@ public class Desk {
     @Id
     private Integer number;
 
-    private String type;
-    private String position;
+    @Enumerated(EnumType.STRING)
+    private DeskType type;
+    @Enumerated(EnumType.STRING)
+    private DeskPosition position;
 
-    @Column(name = "min_seat")
-    private Integer minSeat;
-
-    @Column(name = "max_seat")
-    private Integer maxSeat;
+    @Enumerated(EnumType.STRING)
+    private DeskSeat seat;
 
     private String description;
 
@@ -41,10 +43,10 @@ public class Desk {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "desk")
-    private List<DeskMedia> deskMedia = new ArrayList<>();
+    @OneToMany(mappedBy = "desk", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DeskMedia> deskMedias = new ArrayList<>();
 
-    @OneToMany(mappedBy = "desk")
+    @OneToMany(mappedBy = "desk", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeskDuration> deskDurations = new ArrayList<>();
 
     @OneToMany(mappedBy = "desk")

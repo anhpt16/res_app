@@ -21,7 +21,6 @@ public class DeskDuration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(precision = 10, scale = 2)
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
