@@ -31,6 +31,9 @@ public class Invoice {
     @Enumerated(EnumType.STRING)
     private InvoiceStatus status;
 
+    @Column(name = "expired_at")
+    private LocalDateTime expiredAt;
+
     private BigDecimal prepayment;
 
     @Column(name = "completed_at")

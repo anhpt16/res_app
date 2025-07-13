@@ -24,7 +24,7 @@ public class UserPrincipal implements UserDetails {
     }
     @Override
     public String getUsername() {
-        return null;
+        return userId != null ? "user_" + userId : "anonymous";
     }
     @Override
     public boolean isAccountNonExpired() {

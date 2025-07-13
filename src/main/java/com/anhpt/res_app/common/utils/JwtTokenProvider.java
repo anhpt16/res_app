@@ -41,8 +41,8 @@ public class JwtTokenProvider {
         claims.put("roles", roleInfos);
 
         return Jwts.builder()
-            .setSubject(userInfo.getId().toString())
             .setClaims(claims)
+            .setSubject(userInfo.getId().toString())
             .setIssuedAt(now)
             .setExpiration(expiryDate)
             .signWith(key, SignatureAlgorithm.HS256)

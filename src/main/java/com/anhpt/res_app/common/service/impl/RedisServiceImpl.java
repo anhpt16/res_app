@@ -1,6 +1,7 @@
 package com.anhpt.res_app.common.service.impl;
 
 import com.anhpt.res_app.common.service.RedisService;
+import com.anhpt.res_app.common.utils.RedisCastUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -28,7 +29,7 @@ public class RedisServiceImpl implements RedisService {
     public <T> T get(String key, Class<T> clazz) {
         Object raw = redisTemplate.opsForValue().get(key);
         if (raw == null) return null;
-        return clazz.cast(raw);
+        return RedisCastUtils.castSafe(raw, clazz);
     }
 
     @Override

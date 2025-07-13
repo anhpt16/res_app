@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 
 public class ErrorFilter {
-    public static void writeErrorResponse(HttpServletResponse response, HttpStatus status, String message) throws IOException {
+    public static void writeErrorHttpResponse(HttpServletResponse response, HttpStatus status, String message) throws IOException {
         ApiResponse<Object> errorResponse = new ApiResponse<>(
             status.value(),
             false,

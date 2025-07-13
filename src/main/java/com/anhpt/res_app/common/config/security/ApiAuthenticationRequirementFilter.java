@@ -32,7 +32,7 @@ public class ApiAuthenticationRequirementFilter extends OncePerRequestFilter {
         Map<String, List<ApiInfo>> systemApis = ApiScanner.currentApis;
         if (systemApis.size() == 0) {
             log.error("Không tìm thấy SystemApis");
-            ErrorFilter.writeErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "Đã có lỗi sảy ra");
+            ErrorFilter.writeErrorHttpResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "Đã có lỗi sảy ra");
             return;
         }
         // 3. Kiểm tra xem api hiện tại có trùng khớp với api nào của hệ thống hay không -> Nếu không thì ném ra lỗi
@@ -40,7 +40,7 @@ public class ApiAuthenticationRequirementFilter extends OncePerRequestFilter {
         // Nếu không trùng với bất kỳ Api nào
         if (!categoryMatchResult.isMatched()) {
             log.error("Không tìm thấy api Method: {}, Path: {}", method, path);
-            ErrorFilter.writeErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "Đã có lỗi sảy ra");
+            ErrorFilter.writeErrorHttpResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "Đã có lỗi sảy ra");
             return;
         }
 

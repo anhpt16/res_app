@@ -45,11 +45,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String token = extractToken(request);
         if (token == null) {
             log.warn("Không tìm thấy Token");
-            ErrorFilter.writeErrorResponse(response, HttpStatus.UNAUTHORIZED, "Chức năng cần đăng nhập");
+            ErrorFilter.writeErrorHttpResponse(response, HttpStatus.UNAUTHORIZED, "Chức năng cần đăng nhập");
             return;
         }
         if (!validateToken(token)) {
-            ErrorFilter.writeErrorResponse(response, HttpStatus.UNAUTHORIZED, "Vui lòng đăng nhâp lại");
+            ErrorFilter.writeErrorHttpResponse(response, HttpStatus.UNAUTHORIZED, "Vui lòng đăng nhâp lại");
             return;
         }
         // Nếu token hợp lệ -> lấy userId và kiểm tra các thông tin liên quan (roleId)
@@ -64,7 +64,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if (!ApiMatch.isApiMatched(request.getMethod(), request.getRequestURI(), rolePermissions)) {
             // Nếu không khớp thì chặn
             log.warn("UserId {} không có quyền thực hiện Api: {} - {}", jwtTokenProvider.getUserId(token), request.getMethod(), request.getRequestURI());
-            ErrorFilter.writeErrorResponse(response, HttpStatus.FORBIDDEN, "Không đủ quyền hạn");
+            ErrorFilter.writeErrorHttpResponse(response, HttpStatus.FORBIDDEN, "Không đủ quyền hạn");
             return;
         }
         // Nếu khớp thì lưu userId vào SecurityContext và tiếp tục filter chain
@@ -82,7 +82,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             new UsernamePasswordAuthenticationToken(userPrincipal, null, null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
-
     private String extractToken(HttpServletRequest request) {
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
@@ -93,7 +92,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
         return null;
     }
-
     private boolean validateToken(String token) {
         try {
             jwtTokenProvider.parseClaims(token);
