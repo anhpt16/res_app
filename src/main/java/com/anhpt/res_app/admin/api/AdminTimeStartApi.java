@@ -1,7 +1,8 @@
 package com.anhpt.res_app.admin.api;
 
 import com.anhpt.res_app.admin.dto.request.TimeStartSearchRequest;
-import com.anhpt.res_app.admin.dto.response.TimeStartResponse;
+import com.anhpt.res_app.admin.dto.response.timestart.TimeStartResponse;
+import com.anhpt.res_app.admin.dto.response.timestart.TimeStartDurationResponse;
 import com.anhpt.res_app.admin.service.AdminTimeStartService;
 import com.anhpt.res_app.common.dto.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -64,5 +65,51 @@ public class AdminTimeStartApi {
             response
         );
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+    // Thêm thời lượng cho StartTime
+    @PostMapping("/{timeStartId}/duration/{durationId}")
+    public ResponseEntity<ApiResponse<TimeStartDurationResponse>> addDeskTimeStart(
+        @PathVariable @Min(value = 1, message = "TimeStartId không hợp lệ") Long timeStartId,
+        @PathVariable @Min(value = 1, message = "DurationId không hợp lệ") Long durationId
+    ) {
+        TimeStartDurationResponse timeStartDurationResponse = adminTimeStartService.addTimeStartDuration(timeStartId, durationId);
+        ApiResponse<TimeStartDurationResponse> response = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Thêm thời lượng thành công",
+            timeStartDurationResponse
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // Xóa thời lượng của StartTime
+    @DeleteMapping("/{timeStartId}/duration/{durationId}")
+    public ResponseEntity<ApiResponse<Void>> deleteTimeStartDuration(
+        @PathVariable @Min(value = 1, message = "TimeStartId không hợp lệ") Long timeStartId,
+        @PathVariable @Min(value = 1, message = "DurationId không hợp lệ") Long durationId
+    ) {
+        adminTimeStartService.deleteTimeStartDuration(timeStartId, durationId);
+        ApiResponse<Void> response = new ApiResponse<>(
+            HttpStatus.NO_CONTENT.value(),
+            true,
+            "Xóa thời lượng thành công",
+            null
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // Lấy danh sách thời lượng của Start Time
+    @GetMapping("/{timeStartId}/duration")
+    public ResponseEntity<ApiResponse<List<TimeStartDurationResponse>>> getTimeStartDurations(
+        @PathVariable @Min(value = 1, message = "TimeStartId không hợp lệ") Long timeStartId
+    ) {
+        List<TimeStartDurationResponse> timeStartDurationResponses = adminTimeStartService.getTimeStartDurations(timeStartId);
+        ApiResponse<List<TimeStartDurationResponse>> response = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            true,
+            "Lấy danh sách thời lượng thành công",
+            timeStartDurationResponses
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

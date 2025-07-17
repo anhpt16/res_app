@@ -18,4 +18,6 @@ public interface DurationRepository extends JpaRepository<Duration, Long>, JpaSp
     Page<Duration> findAll(Specification<Duration> specification, Pageable pageable);
 
     List<Duration> findByStatus(DurationStatus status);
+
+    Optional<Duration> findByIdAndStatus(Long id, DurationStatus status);
 }

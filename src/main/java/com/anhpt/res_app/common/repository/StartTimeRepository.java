@@ -15,4 +15,6 @@ public interface StartTimeRepository extends JpaRepository<StartTime, Long>, Jpa
     Optional<StartTime> findByTimeStart(LocalTime timeStart);
 
     List<StartTime> findByStatus(StartTimeStatus startTimeStatus);
+
+    Optional<StartTime> findByIdAndStatus(Long id, StartTimeStatus status);
 }

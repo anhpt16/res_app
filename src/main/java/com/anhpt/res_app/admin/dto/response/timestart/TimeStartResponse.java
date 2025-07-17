@@ -1,4 +1,4 @@
-package com.anhpt.res_app.admin.dto.response;
+package com.anhpt.res_app.admin.dto.response.timestart;
 
 import com.anhpt.res_app.common.enums.status.StartTimeStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;

@@ -35,4 +35,7 @@ public class Duration {
 
     @OneToMany(mappedBy = "duration")
     private List<DeskDuration> deskDurations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "duration")
+    private List<StartTimeDuration> startTimeDurations = new ArrayList<>();
 }

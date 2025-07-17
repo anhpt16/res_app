@@ -1,5 +1,6 @@
 package com.anhpt.res_app.common.service;
 
+import com.anhpt.res_app.common.dto.request.reservation.TopicRequest;
 import com.anhpt.res_app.common.dto.response.reservation.*;
 import com.anhpt.res_app.common.entity.Duration;
 import com.anhpt.res_app.common.entity.StartTime;
@@ -9,6 +10,7 @@ import com.anhpt.res_app.common.enums.status.StartTimeStatus;
 import com.anhpt.res_app.common.repository.DurationRepository;
 import com.anhpt.res_app.common.repository.StartTimeRepository;
 import com.anhpt.res_app.common.utils.Constants;
+import com.anhpt.res_app.common.validator.TopicValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +23,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
+    // Repository
     private final StartTimeRepository startTimeRepository;
     private final DurationRepository durationRepository;
+    // Validation
+    private final TopicValidation topicValidation;
 
     public ReservationOptionResponse initReservationOptions() {
         List<SeatResponse> seats = getAllSeats();
@@ -36,6 +41,15 @@ public class ReservationService {
             .durations(durations)
             .build();
     }
+
+    // Lấy danh sách topic
+    public List<String> getTopics(TopicRequest request) {
+        topicValidation.validateGet(request);
+        // 9:30 | 80p -> (9:30, 10:00, 10:30), 11:00, 11:30, 12:00
+        return null;
+    }
+
+
 
     // Lấy danh sách chỗ ngồi
     private List<SeatResponse> getAllSeats() {

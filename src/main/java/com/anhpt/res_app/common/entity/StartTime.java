@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_start_time")
@@ -32,4 +34,7 @@ public class StartTime {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "startTime", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StartTimeDuration> startTimeDurations = new ArrayList<>();
 }
